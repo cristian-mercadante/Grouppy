@@ -1,0 +1,6 @@
+flask
+flask-wtf
+flask-login
+flask-bootstrap
+flask-sqlalchemy
+flask-admin
