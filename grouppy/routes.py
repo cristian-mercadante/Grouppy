@@ -8,6 +8,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 @app.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 
