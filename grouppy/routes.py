@@ -58,7 +58,6 @@ def logout():
 
 
 @app.route('/profile/<string:username>')
-@login_required
 def profile(username):
     user = User.query.filter_by(username=username).first()
     if not user:
