@@ -4,3 +4,5 @@ flask-login
 flask-bootstrap
 flask-sqlalchemy
 flask-admin
+flask-migrate
+flask-script
