@@ -2,16 +2,17 @@
 
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
+<link rel="stylesheet" href="{{url_for('.static', filename='index.css')}}">
 {% endblock %}
 
 {% block _content %}
 
 <div class="container">
-  <div class="starter-template">
-    <h1>Bootstrap starter template</h1>
-    <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
-      mostly barebones HTML document.</p>
+  <div class="welcome">
+    <h1>Benvenuto su Grouppy</h1>
+    <p class="lead">Gestisci la tua compagnia di amici!
+      <br>Organizza uscite e scegli chi guida per stasera!
+    </p>
   </div>
 
 </div><!-- /.container -->

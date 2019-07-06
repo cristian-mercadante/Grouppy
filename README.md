@@ -18,11 +18,11 @@ exit()
 ### Flask Migrate
 ```
 # Se fatto per la prima volta:
-python run.py db init
+python migrate.py db init
 
 # Altrimenti genera la migrazione
-python run.py db migrate
+python migrate.py db migrate
 
 # Effettua la migrazione
-python run.py db upgrade
+python migrate.py db upgrade
 ```

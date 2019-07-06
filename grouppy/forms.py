@@ -11,7 +11,7 @@ class LoginForm(FlaskForm):
                            InputRequired(), Length(min=4, max=15)])
     password = PasswordField('Password', validators=[
                              InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('Remember Me')
+    remember = BooleanField('Ricordami')
 
     def __init__(self, *k, **kk):
         self._user = None
@@ -24,13 +24,13 @@ class LoginForm(FlaskForm):
 
     def validate_username(self, username):
         if self._user is None:
-            raise ValidationError("Username not recognized.")
+            raise ValidationError("Username non riconosciuto.")
 
     def validate_password(self, password):
         if self._user is None:
             raise ValidationError()
         if not check_password_hash(self._user.password, self.password.data):
-            raise ValidationError("Password does not match.")
+            raise ValidationError("La password non corrisponde.")
 
     def log_in(self):
         if self.validate_on_submit():
@@ -46,13 +46,19 @@ class RegisterForm(FlaskForm):
         InputRequired(), Length(min=4, max=15)])
     password = PasswordField('Password', validators=[
         InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Conferma password', validators=[
+        InputRequired(), Length(min=8, max=80)])
 
     def validate_username(self, username):
         user = User.query.filter_by(username=self.username.data).first()
         if user:
-            raise ValidationError('That username is taken.')
+            raise ValidationError('Username già in uso.')
 
     def validate_email(self, email):
         email = User.query.filter_by(email=self.email.data).first()
         if email:
-            raise ValidationError('That email is taken.')
+            raise ValidationError('Email già in uso.')
+
+    def validate_password(self, password):
+        if self.password.data != self.confirm_password.data:
+            raise ValidationError('La password sono diverse.')
