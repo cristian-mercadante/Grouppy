@@ -1,0 +1,19 @@
+{% extends "_navbar.html" %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='index.css')}}">
+{% endblock %}
+
+{% block _content %}
+
+<div class="container">
+  <div class="welcome">
+    <h1>Benvenuto su Grouppy</h1>
+    <p class="lead">Gestisci la tua compagnia di amici!
+      <br>Organizza uscite e scegli chi guida per stasera!
+    </p>
+  </div>
+
+</div><!-- /.container -->
+{% endblock %}

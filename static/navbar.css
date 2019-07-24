@@ -1,0 +1,13 @@
+/* logo in navbar */
+.navbar-brand {
+  padding: 0px; /* firefox bug fix */
+}
+.navbar-brand>img {
+  height: 175%;
+  padding: 15px; /* firefox bug fix */
+  width: auto;
+}
+
+.right-menuitem{
+  text-align: right
+}
