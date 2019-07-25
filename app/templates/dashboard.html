@@ -4,33 +4,56 @@
 <h1 class="page-header">{{user.username}}
 </h1>
 
-
+<h2 class"sub-header">🔝 Migliori amici</h2>
+{% if best_friends %}
 <div class="row placeholders">
+  {% for bf in best_friends %}
   <div class="col-xs-6 col-sm-3 placeholder">
-    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200"
-      height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-    <h4>Label</h4>
-    <span class="text-muted">Something else</span>
+    <img src="{{url_for('.static', filename='images/' + bf.immagine)}}" width="200" height="200" class="img-responsive"
+      alt="Generic placeholder thumbnail">
+    <h4>{{bf.nome}} {{bf.cognome}}</h4>
+    <span class="text-muted">{{bf.score}}</span>
   </div>
-  <div class="col-xs-6 col-sm-3 placeholder">
-    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200"
-      height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-    <h4>Label</h4>
-    <span class="text-muted">Something else</span>
-  </div>
-  <div class="col-xs-6 col-sm-3 placeholder">
-    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200"
-      height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-    <h4>Label</h4>
-    <span class="text-muted">Something else</span>
-  </div>
-  <div class="col-xs-6 col-sm-3 placeholder">
-    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200"
-      height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-    <h4>Label</h4>
-    <span class="text-muted">Something else</span>
-  </div>
+  {% endfor %}
 </div>
+{% else %}
+<div>
+  Non hai aggiunto amici.
+</div>
+{% endif %}
+
+<h2 class"sub-header">Amici</h2>
+{% if friends %}
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Cognome</th>
+        <th>Email</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for friend in friends %}
+      <tr>
+        <td>{{friend.nome}}</td>
+        <td>{{friend.cognome}}</td>
+        <td>{{friend.email}}</td>
+        <td>{{friend.score}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div>
+  Non hai aggiunto amici.
+</div>
+{% endif %}
+
+
+
 
 <h2 class="sub-header">Section title</h2>
 <div class="table-responsive">

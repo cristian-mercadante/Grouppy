@@ -13,8 +13,8 @@
     <div class="col-sm-3 col-md-2 sidebar">
       {% if current_user.is_authenticated %}
       <ul class="nav nav-sidebar">
-        <li><a href="#">Aggiungi persona</a></li>
-        <li><a href="#">Aggiungi uscita</a></li>
+        <li><a href="{{url_for('add_friend')}}"><span class="glyphicon glyphicon-plus"></span>Aggiungi amico</a></li>
+        <li><a href="{{url_for('add_trip')}}"><span class="glyphicon glyphicon-plus"></span>Aggiungi uscita</a></li>
       </ul>
       {% endif %}
     </div>

@@ -30,7 +30,7 @@ Grouppy
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
         <li class="right-menuitem"><a href="{{url_for('dashboard')}}">Dashboard</a></li>
-        <li class="right-menuitem"><a href="#">Impostazioni</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_settings')}}">Impostazioni</a></li>
         <li class="right-menuitem"><a href="{{url_for('logout')}}">Log Out</a></li>
         {% else %}
         <li class="right-menuitem"><a href="{{url_for('login')}}">Log In</a></li>

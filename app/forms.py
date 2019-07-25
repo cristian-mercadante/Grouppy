@@ -1,11 +1,12 @@
 # -*- coding: utf8 -*-
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, SelectMultipleField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
-from app.models import User
+from app.models import User, Friend
 from werkzeug.security import check_password_hash
-from flask_login import login_user
+from flask_login import login_user, current_user
 
 
 class LoginForm(FlaskForm):
@@ -42,7 +43,7 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[
-        InputRequired(), Email(message="Invalid Email."), Length(max=50)])
+        InputRequired(), Email(message="Email non valida."), Length(max=50)])
     username = StringField('Username', validators=[
         InputRequired(), Length(min=4, max=15)])
     password = PasswordField('Password', validators=[
@@ -53,13 +54,59 @@ class RegisterForm(FlaskForm):
     def validate_username(self, username):
         user = User.get_by_id(self.username.data)
         if user:
-            raise ValidationError('Username gia\' in uso.')
+            raise ValidationError(u'Username già in uso.')
 
     def validate_email(self, email):
         email = User.query(User.email == self.email.data).fetch(1)
         if email:
-            raise ValidationError('Email gia\' in uso.')
+            raise ValidationError(u'Email già in uso.')
 
     def validate_password(self, password):
         if self.password.data != self.confirm_password.data:
             raise ValidationError('La password sono diverse.')
+
+
+class AddFriendForm(FlaskForm):
+    email = StringField('Email', validators=[
+        InputRequired(), Email(message="Email non valida."), Length(max=50)])
+    nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
+    cognome = StringField('Cognome', validators=[
+                          InputRequired(), Length(max=20)])
+    immagine = FileField('Immagine', validators=[FileAllowed(['jpg', 'png'])])
+
+    def validate_email(self, email):
+        friend = Friend.get_by_id(self.email.data, parent=current_user.key)
+        if friend:
+            raise ValidationError(u'Email già in uso.')
+
+
+class AddTripForm(FlaskForm):
+    titolo = StringField('Titolo', validators=[
+                         InputRequired(), Length(max=50)])
+    data = DateField('Data', validators=[InputRequired()])
+    partenza = StringField('Partenza', validators=[
+                           InputRequired(), Length(max=50)])
+    destinazione = StringField('Destinazione', validators=[
+                               InputRequired(), Length(max=50)])
+    distanza = FloatField('Distanza (km)', validators=[InputRequired()])
+
+    # friends = Friend.query(ancestor=ndb.Key(User, current_user)).fetch()
+    # autisti = SelectMultipleField(
+    #   'Autisti',
+    # choices=friends,
+    #  validators = [InputRequired()])
+
+    def validate_titolo(self, titolo):
+        trip = Trip.get_by_id(self.titolo.data, parent=current_user.key)
+        if trip:
+            raise ValidationError(u'Titolo già in uso.')
+
+
+class UserSettingsForm(FlaskForm):
+    email = StringField('Email', validators=[
+        InputRequired(), Email(message="Email non valida."), Length(max=50)])
+
+    def validate_email(self, email):
+        email = User.query(User.email == self.email.data).fetch(1)
+        if email:
+            raise ValidationError(u'Email già in uso.')

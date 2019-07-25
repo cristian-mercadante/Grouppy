@@ -1,0 +1,25 @@
+{% extends "_page.html" %}
+{% import "bootstrap/wtf.html" as wtf %}}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard_form.css')}}">
+{% endblock %}
+
+
+
+{% block page_content %}
+<h1 class="page-header"> Aggiungi uscita</h1>
+
+<form class="myform" method="POST" action="{{url_for('add_trip')}}">
+  {{ form.hidden_tag() }}
+  {{ wtf.form_field(form.titolo) }}
+  {{ wtf.form_field(form.data) }}
+  {{ wtf.form_field(form.partenza) }}
+  {{ wtf.form_field(form.destinazione) }}
+  <!-- inserire autisti-->
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Aggiungi!</button>
+  <div class="container"></div>
+</form>
+
+{% endblock %}
