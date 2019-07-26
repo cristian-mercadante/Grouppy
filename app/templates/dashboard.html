@@ -4,30 +4,59 @@
 <h1 class="page-header">{{user.username}}
 </h1>
 
-<h2 class"sub-header">🔝 Migliori amici</h2>
-{% if best_friends %}
-<div class="row placeholders">
-  {% for bf in best_friends %}
-  <div class="col-xs-6 col-sm-3 placeholder">
-    <img src="{{url_for('.static', filename='images/' + bf.immagine)}}" width="200" height="200" class="img-responsive"
-      alt="Generic placeholder thumbnail">
-    <h4>{{bf.nome}} {{bf.cognome}}</h4>
-    <span class="text-muted">{{bf.score}}</span>
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+  <h2 class="sub-header" style="text-align: center">👍 Migliori amici</h2>
+  {% if best_friends %}
+  <div class="row placeholders">
+    {% for bf in best_friends %}
+    <div class="col-xs-6 col-sm-6 placeholder">
+      <a href="{{ url_for('friend_profile', friend_id=bf.key.id()) }}">
+        <img width="200" height="200" class="img-responsive" {% if bf.immagine_url %}
+          src="{{bf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+          {% endif %}>
+      </a>
+      <h4>{{bf.nome}} {{bf.cognome}}</h4>
+      <span class="text-muted">{{bf.score}}</span>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
+  {% else %}
+  <div>
+    Non hai aggiunto amici.
+  </div>
+  {% endif %}
 </div>
-{% else %}
-<div>
-  Non hai aggiunto amici.
-</div>
-{% endif %}
 
-<h2 class"sub-header">Amici</h2>
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+  <h2 class="sub-header" style="text-align: center">👎 Peggiori amici</h2>
+  {% if worst_friends %}
+  <div class="row placeholders">
+    {% for wf in worst_friends %}
+    <div class="col-xs-6 col-sm-6 placeholder">
+      <a href="{{ url_for('friend_profile', friend_id=wf.key.id()) }}">
+        <img width="200" height="200" class="img-responsive" {% if wf.immagine_url %}
+          src="{{wf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+          {% endif %}>
+      </a>
+      <h4>{{wf.nome}} {{wf.cognome}}</h4>
+      <span class="text-muted">{{wf.score}}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div>
+    Non hai aggiunto amici.
+  </div>
+  {% endif %}
+</div>
+
+<h2 class="sub-header">Amici</h2>
 {% if friends %}
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>Profilo</th>
         <th>Nome</th>
         <th>Cognome</th>
         <th>Email</th>
@@ -37,17 +66,21 @@
     <tbody>
       {% for friend in friends %}
       <tr>
+        <td>
+          <a href="{{ url_for('friend_profile', friend_id=friend.key.id()) }}">
+            <span class="glyphicon glyphicon-user"></span>
+          </a>
+          <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </a>
+        </td>
         <td>{{friend.nome}}</td>
         <td>{{friend.cognome}}</td>
         <td>{{friend.email}}</td>
         <td>{{friend.score}}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
+      </tr> {% endfor %} </tbody>
   </table>
-</div>
-{% else %}
-<div>
+</div> {% else %} <div>
   Non hai aggiunto amici.
 </div>
 {% endif %}

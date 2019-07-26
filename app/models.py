@@ -2,12 +2,6 @@
 from google.appengine.ext import ndb
 from flask_login import UserMixin
 
-# class Color(ndb.Model):
-#    label = ndb.StringProperty(required=True, indexed=True)
-#    red = ndb.IntegerProperty(required=True)
-#    green = ndb.IntegerProperty(required=True)
-#    blue = ndb.IntegerProperty(required=True)
-
 
 class User(UserMixin, ndb.Model):
     username = ndb.StringProperty(required=True, indexed=True)  # id
@@ -23,7 +17,8 @@ class Friend(ndb.Model):
     nome = ndb.StringProperty(required=True)
     cognome = ndb.StringProperty(required=True)
     score = ndb.IntegerProperty(required=True, default=0)
-    immagine = ndb.StringProperty(default='default.jpg')
+    immagine_url = ndb.StringProperty()
+    immagine_blob_key = ndb.BlobKeyProperty()
 
 
 class Trip(ndb.Model):

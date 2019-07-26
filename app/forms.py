@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, SelectMultipleField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from app.models import User, Friend
@@ -72,12 +72,6 @@ class AddFriendForm(FlaskForm):
     nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
     cognome = StringField('Cognome', validators=[
                           InputRequired(), Length(max=20)])
-    immagine = FileField('Immagine', validators=[FileAllowed(['jpg', 'png'])])
-
-    def validate_email(self, email):
-        friend = Friend.get_by_id(self.email.data, parent=current_user.key)
-        if friend:
-            raise ValidationError(u'Email già in uso.')
 
 
 class AddTripForm(FlaskForm):
@@ -110,3 +104,13 @@ class UserSettingsForm(FlaskForm):
         email = User.query(User.email == self.email.data).fetch(1)
         if email:
             raise ValidationError(u'Email già in uso.')
+
+
+class EditFriendForm(FlaskForm):
+    email = StringField('Email', validators=[
+        InputRequired(), Email(message="Email non valida."), Length(max=50)])
+    nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
+    cognome = StringField('Cognome', validators=[
+                          InputRequired(), Length(max=20)])
+    immagine = FileField('Immagine', validators=[
+                         FileRequired(), FileAllowed(['jpg', 'png'])])

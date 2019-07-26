@@ -1,16 +1,15 @@
-{% extends "_navbar.html" %}
+{% extends "_page.html" %}
 
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='starter-template.css')}}">
 {% endblock %}
 
-{% block _content %}
+{% block page_content %}
 <div class="container">
-  <div class="starter-template">
-    <h1>404</h1>
-    <h2>Pagina non trovata :(</h2>
-    <h3>{{message}}</h3>
+  <div class="">
+    <h1 class="page-header">404</h1>
+    <h2 style="text-align: center">Pagina non trovata 👎</h2>
+    <h3 style="text-align: center">{{message}}</h3>
   </div>
 </div>
 {% endblock %}

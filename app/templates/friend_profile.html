@@ -1,0 +1,27 @@
+{% extends "_page.html" %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='friend_profile.css')}}">
+{% endblock %}
+
+
+{% block page_content %}
+
+<h1 class="page-header">{{ friend.nome }} {{ friend.cognome }}</h1>
+
+<div class="row">
+
+  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 text-center placeholder">
+      <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %} src="{{friend.immagine_url + '=s250-c'}}" {% else %}
+      src="{{url_for('.static', filename='images/default.jpg')}}" {% endif %}>
+  </div>
+  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <h2>{{friend.email}}</h2>
+    <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}" class="btn btn-danger">
+      <span class="glyphicon glyphicon-pencil"></span> Modifica
+    </a>
+  </div>
+
+</div>
+{% endblock %}
