@@ -2,7 +2,7 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, flash
 from grouppy import app
 from forms import LoginForm, RegisterForm, AddFriendForm, AddTripForm, UserSettingsForm, EditFriendForm
 from models import User, Friend, Trip
@@ -66,8 +66,7 @@ def dashboard():
     best_friends = friends[0:2]
     worst_friends = friends[-2:]
     return render_template('dashboard.html', user=current_user, friends=friends,
-        best_friends=best_friends, worst_friends=worst_friends)
-
+                           best_friends=best_friends, worst_friends=worst_friends)
 
 
 @app.route('/add_friend', methods=['GET', 'POST'])
@@ -78,6 +77,8 @@ def add_friend():
         new_friend = Friend(email=form.email.data, nome=form.nome.data,
                             cognome=form.cognome.data, parent=current_user.key)
         new_friend.put()
+        message = new_friend.nome + " " + new_friend.cognome + " aggiunto con successo!"
+        flash(message, 'success')
         return redirect(url_for('dashboard'))
     return render_template('add_friend.html', form=form)
 
@@ -141,6 +142,8 @@ def friend_edit(friend_id):
         friend.immagine_blob_key = blobstore.BlobKey(blob_key)
 
         friend.put()
+        message = friend.nome + " " + friend.cognome + " modificato con successo!"
+        flash(message, 'success')
         return redirect(url_for('friend_profile', friend_id=friend_id))
     elif request.method == 'GET':
         form.email.data = friend.email
@@ -151,7 +154,14 @@ def friend_edit(friend_id):
     return render_template('friend_edit.html', friend=friend, form=form, upload_url=upload_url)
 
 
-@app.route('/friend/edit/upload', methods=['GET', 'POST'])
-@login_required
-def friend_edit_upload(friend_id):
-    pass
+@app.route('/friend/delete/<friend_id>')
+def friend_delete(friend_id):
+    friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
+    if not friend:
+        return render_template('_404.html', message='Amico non esistente'), 404
+    message = friend.nome + " " + friend.cognome + " eliminato con successo!"
+    if friend.immagine_blob_key:
+        blobstore.BlobInfo.get(friend.immagine_blob_key).delete()
+    friend.key.delete()
+    flash(message, 'success')
+    return redirect(url_for('dashboard'))

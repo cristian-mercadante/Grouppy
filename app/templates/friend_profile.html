@@ -13,14 +13,42 @@
 <div class="row">
 
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 text-center placeholder">
-      <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %} src="{{friend.immagine_url + '=s250-c'}}" {% else %}
-      src="{{url_for('.static', filename='images/default.jpg')}}" {% endif %}>
+    <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %}
+      src="{{friend.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+      {% endif %}>
   </div>
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
     <h2>{{friend.email}}</h2>
-    <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}" class="btn btn-danger">
+    <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}" class="btn btn-primary">
       <span class="glyphicon glyphicon-pencil"></span> Modifica
     </a>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal3">
+      <span class="glyphicon glyphicon-trash"></span> Elimina
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModal3Label">
+              <strong>Elimina {{friend.nome}} {{friend.cognome}}</strong>
+            </h5>
+          </div>
+          <div class="modal-body">
+            Sei sicuro di voler eliminare questo amico?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+            <a href="{{ url_for('friend_delete', friend_id=friend.key.id()) }}" class="btn btn-danger">
+              Elimina
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

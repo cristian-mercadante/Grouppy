@@ -14,8 +14,9 @@
 <div class="row">
 
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 text-center placeholder">
-      <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %} src="{{friend.immagine_url + '=s250-c'}}" {% else %}
-      src="{{url_for('.static', filename='images/default.jpg')}}" {% endif %}>
+    <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %}
+      src="{{friend.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+      {% endif %}>
   </div>
 
   <form class="myform" method="POST" action="{{ upload_url }}" enctype="multipart/form-data">

@@ -84,12 +84,6 @@ class AddTripForm(FlaskForm):
                                InputRequired(), Length(max=50)])
     distanza = FloatField('Distanza (km)', validators=[InputRequired()])
 
-    # friends = Friend.query(ancestor=ndb.Key(User, current_user)).fetch()
-    # autisti = SelectMultipleField(
-    #   'Autisti',
-    # choices=friends,
-    #  validators = [InputRequired()])
-
     def validate_titolo(self, titolo):
         trip = Trip.get_by_id(self.titolo.data, parent=current_user.key)
         if trip:
