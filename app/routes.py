@@ -157,6 +157,21 @@ def friend_edit(friend_id):
     return render_template('friend_edit.html', friend=friend, form=form, upload_url=upload_url)
 
 
+@app.route('/friend/pic_reset/<friend_id>')
+def friend_pic_reset(friend_id):
+    friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
+    if not friend:
+        return render_template('_404.html', message='Amico non esistente'), 404
+    if friend.immagine_blob_key:
+        blobstore.BlobInfo.get(friend.immagine_blob_key).delete()
+        friend.immagine_blob_key = None
+        friend.immagine_url = None
+        friend.put()
+    message = 'Immagine eliminata con successo!'
+    flash(message, 'success')
+    return redirect(url_for('friend_profile', friend_id=friend_id))
+
+
 @app.route('/friend/delete/<friend_id>')
 def friend_delete(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
@@ -170,7 +185,7 @@ def friend_delete(friend_id):
     return redirect(url_for('dashboard'))
 
 
-@app.route('/add_transazione', methods=['GET', 'POST'])
+@app.route('/transazione/add', methods=['GET', 'POST'])
 def add_transazione():
     form = TransazioneForm()
     if form.validate_on_submit():

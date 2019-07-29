@@ -17,19 +17,25 @@
     <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %}
       src="{{friend.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
       {% endif %}>
+    {% if friend.immagine_url %}
+    <div class="text-center" style="margin-top: 10pt">
+      <a href="{{url_for('friend_pic_reset', friend_id=friend.key.id())}}" class="btn btn-warning">Reset</a>
+    </div>
+    {% endif %}
+
   </div>
 
-  <form class="myform" method="POST" action="{{ upload_url }}" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
-    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <form class="myform" method="POST" action="{{ upload_url }}" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
       <input type="hidden" name="friend" value="{{ friend }}">
       {{ wtf.form_field(form.nome) }}
       {{ wtf.form_field(form.cognome) }}
       {{ wtf.form_field(form.email) }}
       {{ wtf.form_field(form.immagine) }}
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Modifica!</button>
-    </div>
-  </form>
+      <button class="btn btn-primary btn-block" type="submit">Modifica!</button>
+    </form>
+  </div>
 
 </div>
 {% endblock %}
