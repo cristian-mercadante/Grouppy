@@ -11,3 +11,8 @@ indexes:
   properties:
   - name: "score"
     direction: desc
+- kind: "Transazione"
+  ancestor: yes
+  properties:
+  - name: "data"
+    direction: desc

@@ -1,4 +1,9 @@
 {% extends "_page.html" %}
+{% import "bootstrap/wtf.html" as wtf %}}
+
+{% block styles %}
+{{super()}}
+{% endblock %}
 
 {% block page_content %}
 <h1 class="page-header">{{user.username}}</h1>
@@ -79,17 +84,50 @@
         <td>{{friend.cognome}}</td>
         <td>{{friend.email}}</td>
         <td>{{friend.score}}</td>
-      </tr> {% endfor %} </tbody>
+      </tr> {% endfor %}
+    </tbody>
   </table>
 </div> {% else %} <div>
   Non hai aggiunto amici.
 </div>
 {% endif %}
 
+<h2 class="sub-header">Cassa comune</h2>
+<h2 style="margin-top: 0pt">{{ "%.2f €"|format(user.cassa) }}</h2>
+{% if transazioni %}
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Modifica</th>
+        <th>Titolo</th>
+        <th>Data</th>
+        <th>€</th>
+        <th>Descrizione</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tr in transazioni %}
+      <tr>
+        <td>
+          <a href="{{ url_for('transazione_edit', transazione_id=tr.key.id()) }}">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </a>
+        </td>
+        <td>{{tr.titolo}}</td>
+        <td>{{tr.data}}</td>
+        <td>{{tr.costo}}</td>
+        <td>{{tr.descrizione}}</td>
+      </tr> {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+Non ci sono transazioni.
+{% endif %}
 
 
-
-<h2 class="sub-header">Section title</h2>
+<h2 class="sub-header">Uscite</h2>
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>

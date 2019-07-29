@@ -1,0 +1,77 @@
+{% extends "_page.html" %}
+{% import "bootstrap/wtf.html" as wtf %}}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard_form.css')}}">
+
+<link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script>
+  $(document).ready(function () {
+    var date_input = $('input[name="data"]');
+    var container = $('.form').length > 0 ? $('.form').parent() : "body";
+    var options = {
+      format: 'yyyy-mm-dd',
+      container: container,
+      todayHighlight: true,
+      autoclose: true,
+    };
+    date_input.datepicker(options);
+  })
+</script>
+{% endblock %}
+
+
+
+
+{% block page_content %}
+<h1 class="page-header"> {{titolo}} </h1>
+
+
+<form class="myform" method="POST" action="{{dest}}">
+  {{ form.hidden_tag() }}
+  {{ wtf.form_field(form.titolo) }}
+  {{ wtf.form_field(form.data, placeholder='YYYY/MM/DD') }}
+  {{ wtf.form_field(form.costo) }}
+  {{ wtf.form_field(form.descrizione) }}
+  {{ wtf.form_field(form.submit, class='btn btn-primary') }}
+  {% if transazione %}
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal3">
+    <span class="glyphicon glyphicon-trash"></span> Elimina
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModal3Label">
+            <strong>Elimina transazione: {{transazione.titolo}}</strong>
+          </h5>
+        </div>
+        <div class="modal-body">
+          Sei sicuro di voler eliminare questa transazione?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+          <a href="{{ url_for('transazione_delete', transazione_id=transazione.key.id()) }}" class="btn btn-danger">
+            Elimina
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  {% endif %}
+</form>
+{% endblock %}

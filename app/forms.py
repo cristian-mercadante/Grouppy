@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, SelectMultipleField
+from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from app.models import User, Friend
 from werkzeug.security import check_password_hash
@@ -106,5 +106,13 @@ class EditFriendForm(FlaskForm):
     nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
     cognome = StringField('Cognome', validators=[
                           InputRequired(), Length(max=20)])
-    immagine = FileField('Immagine', validators=[
-                         FileRequired(), FileAllowed(['jpg', 'png'])])
+    immagine = FileField('Immagine', validators=[FileAllowed(['jpg', 'png'])])
+
+
+class TransazioneForm(FlaskForm):
+    titolo = StringField('Titolo', validators=[
+                         InputRequired(), Length(max=50)])
+    data = DateField('Data', validators=[InputRequired()], format='%Y-%m-%d')
+    costo = FloatField('Costo', validators=[InputRequired()])
+    descrizione = StringField('Descrizione', validators=[Length(max=300)])
+    submit = SubmitField('Applica')

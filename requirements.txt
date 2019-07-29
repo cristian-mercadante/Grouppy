@@ -2,6 +2,3 @@ flask
 flask-wtf
 flask-login
 flask-bootstrap
-python2-secrets
-Pillow
-cloudstorage

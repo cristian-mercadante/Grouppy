@@ -26,30 +26,29 @@
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal3">
       <span class="glyphicon glyphicon-trash"></span> Elimina
     </button>
+  </div>
+</div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModal3Label">
-              <strong>Elimina {{friend.nome}} {{friend.cognome}}</strong>
-            </h5>
-          </div>
-          <div class="modal-body">
-            Sei sicuro di voler eliminare questo amico?
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-            <a href="{{ url_for('friend_delete', friend_id=friend.key.id()) }}" class="btn btn-danger">
-              Elimina
-            </a>
-          </div>
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal3Label">
+          <strong>Elimina {{friend.nome}} {{friend.cognome}}</strong>
+        </h5>
+      </div>
+      <div class="modal-body">
+        Sei sicuro di voler eliminare questo amico?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
+        <a href="{{ url_for('friend_delete', friend_id=friend.key.id()) }}" class="btn btn-danger">
+          Elimina
+        </a>
       </div>
     </div>
   </div>
-
 </div>
 {% endblock %}
