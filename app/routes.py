@@ -1,7 +1,9 @@
 # -*- coding: utf8 -*-
+from __future__ import division  # float division
 from flask import render_template, url_for, redirect, request, flash
 from grouppy import app
-from forms import LoginForm, RegisterForm, AddFriendForm, AddTripForm, UserSettingsForm, EditFriendForm, TransazioneForm
+from forms import LoginForm, RegisterForm, AddFriendForm, UserSettingsForm, EditFriendForm, TransazioneForm
+from forms import add_trip_form
 from models import User, Friend, Trip, Transazione
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
@@ -82,19 +84,6 @@ def add_friend():
         flash(message, 'success')
         return redirect(url_for('dashboard'))
     return render_template('add_friend.html', form=form)
-
-
-@app.route('/add_trip', methods=['GET', 'POST'])
-@login_required
-def add_trip():
-    form = AddTripForm()
-    if form.validate_on_submit():
-        new_trip = Trip(titolo=form.titolo.data, data=form.data.data,
-                        partenza=form.partenza.data, destinazione=form.destinazione.data,
-                        distanza=form.distanza.data, parent=current_user.key)
-        new_trip.put()
-        return redirect(url_for('dashboard'))
-    return render_template('add_trip.html', form=form)
 
 
 @app.route('/user_settings', methods=['GET', 'POST'])
@@ -250,3 +239,107 @@ def transazione_delete(transazione_id):
     transazione.key.delete()
     flash(message, 'success')
     return redirect(url_for('dashboard'))
+
+
+@app.route('/add_trip', methods=['GET', 'POST'])
+@login_required
+def add_trip():
+    friends = Friend.query().fetch()
+    form = add_trip_form(friends)
+    if request.method == 'POST' and form.validate_on_submit():
+        autisti = []
+        passeggeri = []
+        for f in friends:
+            fid_auto = 'auto' + str(f.key.id())
+            fid_pass = 'pass' + str(f.key.id())
+            auto = False
+            if request.form.get(fid_auto):
+                autisti.append(str(f.key.id()))
+                auto = True
+            if request.form.get(fid_pass):
+                if auto:
+                    message = u'{} {} non può essere sia autista che passeggero.'.format(
+                        f.nome, f.cognome)
+                    flash(message, 'warning')
+                    return redirect(url_for('add_trip',
+                                            titolo=form.titolo.data,
+                                            data=form.data.data,
+                                            partenza=form.partenza.data,
+                                            destinazione=form.destinazione.data,
+                                            distanza=form.distanza.data
+                                            ))
+                else:
+                    passeggeri.append(str(f.key.id()))
+        if len(passeggeri) == 0:
+            message = 'Non ci sono passeggeri.'
+            flash(message, 'warning')
+            return redirect(url_for('add_trip',
+                                    titolo=form.titolo.data,
+                                    data=form.data.data,
+                                    partenza=form.partenza.data,
+                                    destinazione=form.destinazione.data,
+                                    distanza=form.distanza.data
+                                    ))
+        if len(autisti) == 0:
+            message = 'Non ci sono autisti.'
+            flash(message, 'warning')
+            return redirect(url_for('add_trip',
+                                    titolo=form.titolo.data,
+                                    data=form.data.data,
+                                    partenza=form.partenza.data,
+                                    destinazione=form.destinazione.data,
+                                    distanza=form.distanza.data
+                                    ))
+        if len(autisti) > len(passeggeri):
+            message = u'Ci sono più autisti che passeggeri... Non dovrebbe succedere.'
+            flash(message, 'warning')
+            return redirect(url_for('add_trip',
+                                    titolo=form.titolo.data,
+                                    data=form.data.data,
+                                    partenza=form.partenza.data,
+                                    destinazione=form.destinazione.data,
+                                    distanza=form.distanza.data
+                                    ))
+        for a in autisti:
+            f = Friend.get_by_id(long(a), parent=current_user.key)
+            if not f:
+                message = "Errore: id amico {} non esistente".format(a)
+                flash(message, 'danger')
+                return redirect(url_for('add_trip',
+                                        titolo=form.titolo.data,
+                                        data=form.data.data,
+                                        partenza=form.partenza.data,
+                                        destinazione=form.destinazione.data,
+                                        distanza=form.distanza.data
+                                        ))
+            f.score += int(form.distanza.data)
+            f.put()
+        score = len(autisti) * form.distanza.data
+        score /= len(passeggeri)
+        for p in passeggeri:
+            f = Friend.get_by_id(long(p), parent=current_user.key)
+            if not f:
+                message = "Errore: id amico {} non esistente".format(p)
+                flash(message, 'danger')
+                return redirect(url_for('add_trip',
+                                        titolo=form.titolo.data,
+                                        data=form.data.data,
+                                        partenza=form.partenza.data,
+                                        destinazione=form.destinazione.data,
+                                        distanza=form.distanza.data
+                                        ))
+            f.score -= int(score)
+            f.put()
+        message = 'Uscita aggiunta con successo'
+        flash(message, 'success')
+        return redirect(url_for('dashboard'))
+        
+    elif request.method == 'GET':
+        form.titolo.data = request.args.get('titolo')
+        if request.args.get('data'):
+            form.data.data = datetime.strptime(
+                request.args.get('data'), "%Y-%m-%d")
+        form.partenza.data = request.args.get('partenza')
+        form.destinazione.data = request.args.get('destinazione')
+        form.distanza.data = request.args.get('distanza')
+    return render_template('add_trip.html', form=form, friends=friends, submit_to=url_for('add_trip'))

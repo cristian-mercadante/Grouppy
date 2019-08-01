@@ -23,7 +23,7 @@ class Friend(ndb.Model):
 
 
 class Trip(ndb.Model):
-    titolo = ndb.StringProperty(required=True)  # id
+    titolo = ndb.StringProperty(required=True)
     data = ndb.StringProperty(required=True)
     partenza = ndb.StringProperty(required=True)
     destinazione = ndb.StringProperty(required=True)

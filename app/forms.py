@@ -74,22 +74,6 @@ class AddFriendForm(FlaskForm):
                           InputRequired(), Length(max=20)])
 
 
-class AddTripForm(FlaskForm):
-    titolo = StringField('Titolo', validators=[
-                         InputRequired(), Length(max=50)])
-    data = DateField('Data', validators=[InputRequired()])
-    partenza = StringField('Partenza', validators=[
-                           InputRequired(), Length(max=50)])
-    destinazione = StringField('Destinazione', validators=[
-                               InputRequired(), Length(max=50)])
-    distanza = FloatField('Distanza (km)', validators=[InputRequired()])
-
-    def validate_titolo(self, titolo):
-        trip = Trip.get_by_id(self.titolo.data, parent=current_user.key)
-        if trip:
-            raise ValidationError(u'Titolo già in uso.')
-
-
 class UserSettingsForm(FlaskForm):
     email = StringField('Email', validators=[
         InputRequired(), Email(message="Email non valida."), Length(max=50)])
@@ -116,3 +100,25 @@ class TransazioneForm(FlaskForm):
     costo = FloatField('Costo', validators=[InputRequired()])
     descrizione = StringField('Descrizione', validators=[Length(max=300)])
     submit = SubmitField('Applica')
+
+
+def add_trip_form(friends, **kwargs):
+    class AddTripForm(FlaskForm):
+        titolo = StringField('Titolo', validators=[
+            InputRequired(), Length(max=50)])
+        data = DateField('Data', validators=[InputRequired()])
+        partenza = StringField('Partenza', validators=[
+            InputRequired(), Length(max=50)])
+        destinazione = StringField('Destinazione', validators=[
+            InputRequired(), Length(max=50)])
+        distanza = FloatField('Distanza (km)', validators=[InputRequired()])
+        submit = SubmitField('Conferma')
+
+    lista = {}
+    for f in friends:
+        label = str(f.key.id())
+        nomecogn = f.nome + ' ' + f.cognome
+        field = BooleanField(nomecogn)
+        setattr(AddTripForm, label, field)
+    setattr(AddTripForm, 'submit', SubmitField('Avanti'))
+    return AddTripForm(**kwargs)
