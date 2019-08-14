@@ -333,7 +333,7 @@ def add_trip():
         message = 'Uscita aggiunta con successo'
         flash(message, 'success')
         return redirect(url_for('dashboard'))
-        
+
     elif request.method == 'GET':
         form.titolo.data = request.args.get('titolo')
         if request.args.get('data'):
@@ -343,3 +343,8 @@ def add_trip():
         form.destinazione.data = request.args.get('destinazione')
         form.distanza.data = request.args.get('distanza')
     return render_template('add_trip.html', form=form, friends=friends, submit_to=url_for('add_trip'))
+
+
+@app.route('/map_test')
+def map_test():
+    return render_template('map_test.html')
