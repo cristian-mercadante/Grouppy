@@ -17,17 +17,22 @@ class Friend(ndb.Model):
     email = ndb.StringProperty(required=True)
     nome = ndb.StringProperty(required=True)
     cognome = ndb.StringProperty(required=True)
-    score = ndb.IntegerProperty(required=True, default=0)
+    score = ndb.FloatProperty(required=True, default=0)
     immagine_url = ndb.StringProperty()
     immagine_blob_key = ndb.BlobKeyProperty()
 
 
 class Trip(ndb.Model):
     titolo = ndb.StringProperty(required=True)
-    data = ndb.StringProperty(required=True)
+    data = ndb.DateProperty(required=True)
     partenza = ndb.StringProperty(required=True)
     destinazione = ndb.StringProperty(required=True)
-    distanza = ndb.IntegerProperty(required=True)
+    distanza = ndb.FloatProperty(required=True)
+    ritorno = ndb.BooleanProperty(default=False)
+    pagato = ndb.BooleanProperty(default=False)
+    speciale = ndb.BooleanProperty(default=False)
+    autisti = ndb.JsonProperty(default=[])
+    passeggeri = ndb.JsonProperty(default=[])
 
 
 class Transazione(ndb.Model):

@@ -16,3 +16,8 @@ indexes:
   properties:
   - name: "data"
     direction: desc
+- kind: "Trip"
+  ancestor: yes
+  properties:
+  - name: "data"
+    direction: desc

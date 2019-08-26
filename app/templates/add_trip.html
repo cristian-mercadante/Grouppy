@@ -14,6 +14,8 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+
+<!-- PER CALENDARIO -->
 <script>
   $(document).ready(function () {
     var date_input = $('input[name="data"]');
@@ -40,6 +42,9 @@
   {{ wtf.form_field(form.partenza) }}
   {{ wtf.form_field(form.destinazione) }}
   {{ wtf.form_field(form.distanza) }}
+  {{ wtf.form_field(form.ritorno) }}
+  {{ wtf.form_field(form.pagato) }}
+  {{ wtf.form_field(form.speciale) }}
   <div class="container-fluid">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <h5><strong>Autisti</strong></h5>

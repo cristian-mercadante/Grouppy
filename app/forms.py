@@ -112,6 +112,9 @@ def add_trip_form(friends, **kwargs):
         destinazione = StringField('Destinazione', validators=[
             InputRequired(), Length(max=50)])
         distanza = FloatField('Distanza (km)', validators=[InputRequired()])
+        ritorno = BooleanField('Andata e ritorno?')
+        pagato = BooleanField(u'L\'autista è stato pagato?')
+        speciale = BooleanField(u'Era un\'occasione speciale?')
         submit = SubmitField('Conferma')
 
     lista = {}
