@@ -31,8 +31,8 @@ class Trip(ndb.Model):
     ritorno = ndb.BooleanProperty(default=False)
     pagato = ndb.BooleanProperty(default=False)
     speciale = ndb.BooleanProperty(default=False)
-    autisti = ndb.JsonProperty(default=[])
-    passeggeri = ndb.JsonProperty(default=[])
+    autisti = ndb.IntegerProperty(repeated=True)
+    passeggeri = ndb.IntegerProperty(repeated=True)
 
 
 class Transazione(ndb.Model):

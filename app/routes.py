@@ -341,8 +341,8 @@ def add_trip():
                     ritorno=form.ritorno.data,
                     pagato=form.pagato.data,
                     speciale=form.speciale.data,
-                    autisti=autisti,
-                    passeggeri=passeggeri)
+                    autisti=map(long, autisti),
+                    passeggeri=map(long, passeggeri))
         trip.put()
 
         message = 'Uscita aggiunta con successo'
@@ -380,6 +380,23 @@ def reset_scores():
     return 'ok'
 
 
+@app.route('/uscita/<trip_id>')
+def trip_info(trip_id):
+    trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
+    if not trip:
+        return render_template('_404.html', message='Uscita non esistente'), 404
+    autisti = []
+    for a in trip.autisti:
+        f = Friend.get_by_id(a, parent=current_user.key)
+        autisti.append(f)
+    passeggeri = []
+    for p in trip.passeggeri:
+        f = Friend.get_by_id(p, parent=current_user.key)
+        passeggeri.append(f)
+    return render_template('trip_info.html', trip=trip, autisti=autisti, passeggeri=passeggeri)
+
+
+# GOOGLE MAPS API INTEGRATION
 @app.route('/map_test')
 def map_test():
     return render_template('map_test.html')

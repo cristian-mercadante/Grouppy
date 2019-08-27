@@ -1,0 +1,72 @@
+{% extends "_page.html" %}
+
+{% block page_content %}
+<h1 class="page-header">Informazioni su: {{ trip.titolo }} del {{ trip.data }}</h1>
+
+<div class="container" style="text-align: center">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h4>Partenza</h4>
+    {{trip.partenza}}
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h4>Destinazione</h4>
+    {{trip.destinazione}}
+  </div>
+</div>
+
+<div class="container" style="text-align: center">
+  <h4>Distanza</h4>
+  {{trip.distanza}} KM
+
+  <h4>Info</h4>
+  <p>Andata e ritorno:
+    {% if trip.ritorno %}
+    <span class="glyphicon glyphicon-ok" style="color: green"></span>
+    {% else %}
+    <span class="glyphicon glyphicon-remove" style="color: red"></span>
+    {% endif %}
+  </p>
+  <p>L'autista è stato pagato?
+    {% if trip.pagato %}
+    <span class="glyphicon glyphicon-ok" style="color: green"></span>
+    {% else %}
+    <span class="glyphicon glyphicon-remove" style="color: red"></span>
+    {% endif %}
+  </p>
+  <p>Era un'occasione speciale?
+    {% if trip.speciale %}
+    <span class="glyphicon glyphicon-ok" style="color: green"></span>
+    {% else %}
+    <span class="glyphicon glyphicon-remove" style="color: red"></span>
+    {% endif %}
+  </p>
+</div>
+
+<div class="container" style="text-align: center">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h4>Autisti</h4>
+    {% for a in autisti %}
+    {% if a %}
+    <a href="{{url_for('friend_profile', friend_id=a.key.id())}}">{{a.nome}} {{a.cognome}}</a><br>
+    {% else %}
+    Amico non esistente
+    {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h4>Passeggeri</h4>
+    {% for p in passeggeri %}
+    {% if p %}
+    <a href="{{url_for('friend_profile', friend_id=p.key.id())}}">{{p.nome}} {{p.cognome}}</a><br>
+    {% else %}
+    Amico non esistente<br>
+    {% endif %}
+
+    {% endfor %}
+  </div>
+</div>
+
+
+{% endblock %}
