@@ -9,8 +9,6 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
-import json
-
 from google.appengine.ext import blobstore, ndb
 from google.appengine.api import images
 import werkzeug
@@ -127,8 +125,7 @@ def friend_edit(friend_id):
         if form.immagine.data:
             uploaded_file = request.files.get('immagine')
             file_headers = uploaded_file.headers['Content-Type']
-            blob_key = werkzeug.parse_options_header(file_headers)[
-                1]['blob-key']
+            blob_key = werkzeug.parse_options_header(file_headers)[1]['blob-key']
             image_url = images.get_serving_url(blob_key=blob_key)
 
             if friend.immagine_blob_key:
@@ -245,120 +242,123 @@ def transazione_delete(transazione_id):
     return redirect(url_for('dashboard'))
 
 
-@app.route('/add_trip', methods=['GET', 'POST'])
+def trip_error_redirection(form, message, style, endpoint):
+    flash(message, style)
+    return redirect(url_for(endpoint,
+                        titolo=form.titolo.data,
+                        data=form.data.data,
+                        partenza=form.partenza.data,
+                        destinazione=form.destinazione.data,
+                        distanza=form.distanza.data,
+                        ritorno=form.ritorno.data,
+                        pagato=form.pagato.data,
+                        speciale=form.speciale.data
+                    ))
+
+def trip_get_handler(form, request):
+    form.titolo.data = request.args.get('titolo')
+    if request.args.get('data'):
+        form.data.data = datetime.strptime(
+            request.args.get('data'), "%Y-%m-%d")
+    form.partenza.data = request.args.get('partenza')
+    form.destinazione.data = request.args.get('destinazione')
+    form.distanza.data = request.args.get('distanza')
+    if request.args.get('ritorno') == 'True':
+        form.ritorno.data = 'y'
+    if request.args.get('pagato') == 'True':
+        form.pagato.data = 'y'
+    if request.args.get('speciale') == 'True':
+        form.speciale.data = 'y'
+
+def trip_post_handler(form, request, friends, endpoint):
+    autisti = []
+    passeggeri = []
+    for f in friends:
+        fid_auto = 'auto' + str(f.key.id())
+        fid_pass = 'pass' + str(f.key.id())
+        auto = False
+        if request.form.get(fid_auto):
+            autisti.append(str(f.key.id()))
+            auto = True
+        if request.form.get(fid_pass):
+            if auto:
+                message = u'{} {} non può essere sia autista che passeggero.'.format(
+                    f.nome, f.cognome)
+                return trip_error_redirection(form, message, 'warning', endpoint)
+            else:
+                passeggeri.append(str(f.key.id()))
+    if len(passeggeri) == 0:
+        message = 'Non ci sono passeggeri.'
+        return trip_error_redirection(form, message, 'warning', endpoint)
+    if len(autisti) == 0:
+        message = 'Non ci sono autisti.'
+        return trip_error_redirection(form, message, 'warning', endpoint)
+    if len(autisti) > len(passeggeri):
+        message = u'Ci sono più autisti che passeggeri... Non dovrebbe succedere.'
+        return trip_error_redirection(form, message, 'warning', endpoint)
+
+    # Aggironamento punteggi
+    score = score_calc_total(form.distanza.data,
+                                form.ritorno.data,
+                                form.pagato.data,
+                                form.speciale.data)
+    persone = autisti + passeggeri
+    score_passeggero = - score / len(persone)
+    score_autista = score / len(autisti) + score_passeggero
+    for p in persone:
+        f = Friend.get_by_id(long(p), parent=current_user.key)
+        if not f:
+            message = "Errore: id amico {} non esistente".format(a)
+            return trip_error_redirection(form, message, 'danger', endpoint)
+        if p in autisti:
+            f.score += score_autista
+        else:
+            f.score += score_passeggero
+        f.put()
+
+    # SALVATAGGIO SU DATASTORE DELLA TRASFERTA
+    trip = Trip(parent=current_user.key,
+                titolo=form.titolo.data,
+                data=form.data.data,
+                partenza=form.partenza.data,
+                destinazione=form.destinazione.data,
+                distanza=form.distanza.data,
+                ritorno=form.ritorno.data,
+                pagato=form.pagato.data,
+                speciale=form.speciale.data,
+                autisti=map(long, autisti),
+                passeggeri=map(long, passeggeri))
+    trip.put()
+
+    message = 'Uscita aggiunta con successo'
+    flash(message, 'success')
+
+@app.route('/uscita/add', methods=['GET', 'POST'])
 @login_required
 def add_trip():
     friends = Friend.query(ancestor=current_user.key).fetch()
     form = add_trip_form(friends)
     if request.method == 'POST' and form.validate_on_submit():
-        autisti = []
-        passeggeri = []
-        for f in friends:
-            fid_auto = 'auto' + str(f.key.id())
-            fid_pass = 'pass' + str(f.key.id())
-            auto = False
-            if request.form.get(fid_auto):
-                autisti.append(str(f.key.id()))
-                auto = True
-            if request.form.get(fid_pass):
-                if auto:
-                    message = u'{} {} non può essere sia autista che passeggero.'.format(
-                        f.nome, f.cognome)
-                    flash(message, 'warning')
-                    return redirect(url_for('add_trip',
-                                            titolo=form.titolo.data,
-                                            data=form.data.data,
-                                            partenza=form.partenza.data,
-                                            destinazione=form.destinazione.data,
-                                            distanza=form.distanza.data
-                                            ))
-                else:
-                    passeggeri.append(str(f.key.id()))
-        if len(passeggeri) == 0:
-            message = 'Non ci sono passeggeri.'
-            flash(message, 'warning')
-            return redirect(url_for('add_trip',
-                                    titolo=form.titolo.data,
-                                    data=form.data.data,
-                                    partenza=form.partenza.data,
-                                    destinazione=form.destinazione.data,
-                                    distanza=form.distanza.data
-                                    ))
-        if len(autisti) == 0:
-            message = 'Non ci sono autisti.'
-            flash(message, 'warning')
-            return redirect(url_for('add_trip',
-                                    titolo=form.titolo.data,
-                                    data=form.data.data,
-                                    partenza=form.partenza.data,
-                                    destinazione=form.destinazione.data,
-                                    distanza=form.distanza.data
-                                    ))
-        if len(autisti) > len(passeggeri):
-            message = u'Ci sono più autisti che passeggeri... Non dovrebbe succedere.'
-            flash(message, 'warning')
-            return redirect(url_for('add_trip',
-                                    titolo=form.titolo.data,
-                                    data=form.data.data,
-                                    partenza=form.partenza.data,
-                                    destinazione=form.destinazione.data,
-                                    distanza=form.distanza.data
-                                    ))
-
-        # Aggironamento punteggi
-        score = score_calc_total(form.distanza.data,
-                                 form.ritorno.data,
-                                 form.pagato.data,
-                                 form.speciale.data)
-        persone = autisti + passeggeri
-        score_passeggero = - score / len(persone)
-        score_autista = score / len(autisti) + score_passeggero
-        for p in persone:
-            f = Friend.get_by_id(long(p), parent=current_user.key)
-            if not f:
-                message = "Errore: id amico {} non esistente".format(a)
-                flash(message, 'danger')
-                return redirect(url_for('add_trip',
-                                        titolo=form.titolo.data,
-                                        data=form.data.data,
-                                        partenza=form.partenza.data,
-                                        destinazione=form.destinazione.data,
-                                        distanza=form.distanza.data
-                                        ))
-            if p in autisti:
-                f.score += score_autista
-            else:
-                f.score += score_passeggero
-            f.put()
-
-        # SALVATAGGIO SU DATASTORE DELLA TRASFERTA
-        trip = Trip(parent=current_user.key,
-                    titolo=form.titolo.data,
-                    data=form.data.data,
-                    partenza=form.partenza.data,
-                    destinazione=form.destinazione.data,
-                    distanza=form.distanza.data,
-                    ritorno=form.ritorno.data,
-                    pagato=form.pagato.data,
-                    speciale=form.speciale.data,
-                    autisti=map(long, autisti),
-                    passeggeri=map(long, passeggeri))
-        trip.put()
-
-        message = 'Uscita aggiunta con successo'
-        flash(message, 'success')
+        trip_post_handler(form, request, friends, 'add_trip')
         return redirect(url_for('dashboard'))
-
     elif request.method == 'GET':
-        form.titolo.data = request.args.get('titolo')
-        if request.args.get('data'):
-            form.data.data = datetime.strptime(
-                request.args.get('data'), "%Y-%m-%d")
-        form.partenza.data = request.args.get('partenza')
-        form.destinazione.data = request.args.get('destinazione')
-        form.distanza.data = request.args.get('distanza')
+        trip_get_handler(form, request)
     return render_template('add_trip.html', form=form, friends=friends, submit_to=url_for('add_trip'))
 
+@app.route('/uscita/edit/<trip_id>')
+def edit_trip(trip_id):
+    trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
+    if not trip:
+        return render_template('_404.html', message='Uscita non esistente'), 404
+    friends = Friend.query(ancestor=current_user.key).fetch()
+    form = add_trip_form(friends)
+    if request.method == 'POST' and form.validate_on_submit():
+
+        trip_post_handler(form, request, friends, 'edit_trip')
+        return redirect(url_for('dashboard'))
+    elif request.method == 'GET':
+        trip_get_handler(form, request)
+    return render_template('add_trip.html', form=form, friends=friends, submit_to=url_for('edit_trip'))
 
 def score_calc_total(distanza, ritorno, pagato, speciale):
     score = float(distanza)
@@ -394,6 +394,8 @@ def trip_info(trip_id):
         f = Friend.get_by_id(p, parent=current_user.key)
         passeggeri.append(f)
     return render_template('trip_info.html', trip=trip, autisti=autisti, passeggeri=passeggeri)
+
+
 
 
 # GOOGLE MAPS API INTEGRATION
