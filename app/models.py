@@ -33,6 +33,7 @@ class Trip(ndb.Model):
     speciale = ndb.BooleanProperty(default=False)
     autisti = ndb.IntegerProperty(repeated=True)
     passeggeri = ndb.IntegerProperty(repeated=True)
+    score_total = ndb.FloatProperty(required=True)
 
 
 class Transazione(ndb.Model):
