@@ -12,6 +12,7 @@ Grouppy
 
 {% block content %}
 <nav class="navbar navbar-inverse navbar-fixed-top">
+  <p class="navbar-text navbar-center">Grouppy</p>
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -26,7 +27,6 @@ Grouppy
           alt="Grouppy">
       </a>
     </div>
-    <p class="navbar-text navbar-center">Grouppy</p>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
