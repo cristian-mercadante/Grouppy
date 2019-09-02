@@ -101,13 +101,26 @@ def user_settings():
     return render_template('user_settings.html', form=form)
 
 
+def get_trips(friend_id):
+    trips = Trip.query(ancestor=current_user.key).fetch()
+    trip_auto = []
+    trip_pass = []
+    for t in trips:
+        if friend_id in t.autisti:
+            trip_auto.append(t)
+        elif friend_id in t.passeggeri:
+            trip_pass.append(t)
+    return trip_auto, trip_pass
+
+
 @app.route('/friend/<friend_id>')
 @login_required
 def friend_profile(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
-    return render_template('friend_profile.html', friend=friend)
+    trip_auto, trip_pass = get_trips(int(friend_id))
+    return render_template('friend_profile.html', friend=friend, trip_auto=trip_auto, trip_pass=trip_pass)
 
 
 @app.route('/friend/edit/<friend_id>', methods=['GET', 'POST'])

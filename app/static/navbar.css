@@ -11,3 +11,13 @@
 .right-menuitem{
   text-align: right
 }
+
+.navbar-center{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    text-align: center;
+    letter-spacing: 3pt;
+    font-family: "Berlin Sans FB", serif;
+}

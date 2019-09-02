@@ -13,12 +13,12 @@
 <div class="row">
 
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 text-center placeholder">
-    <img width="200" height="200" class="img-responsive" {% if friend.immagine_url %}
-      src="{{friend.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
-      {% endif %}>
+    <img class="img-responsive" {% if friend.immagine_url %} src="{{friend.immagine_url + '=s250-c'}}" {% else %}
+      src="{{url_for('.static', filename='images/default.jpg')}}" {% endif %}>
   </div>
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-    <h2>{{friend.email}}</h2>
+    <h3>{{friend.email}}</h3>
+    <h3>Score: {{ friend.score | round(2, 'common')}}</h3>
     <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}" class="btn btn-primary">
       <span class="glyphicon glyphicon-pencil"></span> Modifica
     </a>
@@ -28,6 +28,84 @@
     </button>
   </div>
 </div>
+
+<!-- Tabella uscite -->
+<div class="row">
+  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <h2 class="sub-header">Uscite come autista</h2>
+    {% if trip_auto %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Titolo</th>
+            <th>Data</th>
+            <th>Partenza</th>
+            <th>Destinazione</th>
+            <th>KM</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in trip_auto %}
+          <tr>
+            <td>
+              <a href="{{ url_for('trip_info', trip_id=t.key.id()) }}">
+                <span class="glyphicon glyphicon-info-sign"></span>
+              </a>
+            </td>
+            <td>{{t.titolo}}</td>
+            <td>{{t.data}}</td>
+            <td>{{t.partenza}}</td>
+            <td>{{t.destinazione}}</td>
+            <td>{{t.distanza}}</td>
+          </tr> {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    Non ci sono uscite.
+    {% endif %}
+  </div>
+
+  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <h2 class="sub-header">Uscite come passeggero</h2>
+    {% if trip_pass %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Titolo</th>
+            <th>Data</th>
+            <th>Partenza</th>
+            <th>Destinazione</th>
+            <th>KM</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in trip_pass %}
+          <tr>
+            <td>
+              <a href="{{ url_for('trip_info', trip_id=t.key.id()) }}">
+                <span class="glyphicon glyphicon-info-sign"></span>
+              </a>
+            </td>
+            <td>{{t.titolo}}</td>
+            <td>{{t.data}}</td>
+            <td>{{t.partenza}}</td>
+            <td>{{t.destinazione}}</td>
+            <td>{{t.distanza}}</td>
+          </tr> {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    Non ci sono uscite.
+    {% endif %}
+  </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModal3Label"
