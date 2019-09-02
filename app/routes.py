@@ -418,15 +418,6 @@ def score_calc_total(distanza, ritorno, pagato, speciale):
     return score
 
 
-@app.route('/reset_scores')
-def reset_scores():
-    friends = Friend.query(ancestor=current_user.key).fetch()
-    for f in friends:
-        f.score = 0
-        f.put()
-    return 'ok'
-
-
 @app.route('/uscita/<trip_id>')
 def trip_info(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
@@ -454,7 +445,10 @@ def delete_trip(trip_id):
     flash(message, 'success')
     return redirect(url_for('dashboard'))
 
+
 # GOOGLE MAPS API INTEGRATION
+'''
 @app.route('/map_test')
 def map_test():
     return render_template('map_test.html')
+'''
