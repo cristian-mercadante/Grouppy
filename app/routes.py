@@ -256,9 +256,10 @@ def transazione_delete(transazione_id):
     return redirect(url_for('dashboard'))
 
 
-def trip_error_redirection(form, message, style, endpoint):
+def trip_error_redirection(form, message, style, trip_id, endpoint):
     flash(message, style)
     return redirect(url_for(endpoint,
+                            trip_id=trip_id,
                             titolo=form.titolo.data,
                             data=form.data.data,
                             partenza=form.partenza.data,
@@ -294,7 +295,7 @@ class Trip_POST_Handler():
         self.class_autisti = None
         self.class_passeggeri = None
 
-    def trip_post_handler(self, form, request, friends, endpoint):
+    def trip_post_handler(self, form, request, friends, trip_id, endpoint):
         autisti = []
         passeggeri = []
         for f in friends:
@@ -308,23 +309,23 @@ class Trip_POST_Handler():
                 if auto:
                     message = u'{} {} non può essere sia autista che passeggero.'.format(
                         f.nome, f.cognome)
-                    return trip_error_redirection(form, message, 'warning', endpoint)
+                    return trip_error_redirection(form, message, 'warning', trip_id, endpoint)
                 else:
                     passeggeri.append(str(f.key.id()))
         if len(passeggeri) == 0:
             message = 'Non ci sono passeggeri.'
-            return trip_error_redirection(form, message, 'warning', endpoint)
+            return trip_error_redirection(form, message, 'warning', trip_id, endpoint)
         if len(autisti) == 0:
             message = 'Non ci sono autisti.'
-            return trip_error_redirection(form, message, 'warning', endpoint)
+            return trip_error_redirection(form, message, 'warning', trip_id, endpoint)
         if len(autisti) > len(passeggeri):
             message = u'Ci sono più autisti che passeggeri... Non dovrebbe succedere.'
-            return trip_error_redirection(form, message, 'warning', endpoint)
+            return trip_error_redirection(form, message, 'warning', trip_id, endpoint)
         self.class_autisti = autisti
         self.class_passeggeri = passeggeri
 
 
-def update_friends_score(score, autisti, passeggeri):
+def update_friends_score(score, autisti, passeggeri, trip_id):
     persone = autisti + passeggeri
     score_passeggero = - score / len(persone)
     score_autista = score / len(autisti) + score_passeggero
@@ -332,7 +333,7 @@ def update_friends_score(score, autisti, passeggeri):
         f = Friend.get_by_id(long(p), parent=current_user.key)
         if not f:
             message = "Errore: id amico {} non esistente".format(a)
-            return trip_error_redirection(form, message, 'danger', endpoint)
+            return trip_error_redirection(form, message, 'danger', trip_id, endpoint)
         if p in autisti:
             f.score += score_autista
         else:
@@ -347,15 +348,16 @@ def add_trip():
     form = add_trip_form(friends)
     if request.method == 'POST' and form.validate_on_submit():
         tph = Trip_POST_Handler()
-        tph.trip_post_handler(form, request, friends, 'add_trip')
+        tph.trip_post_handler(form, request, friends, 0, 'add_trip')
         if tph.class_autisti and tph.class_passeggeri:
             # Aggironamento punteggi
-            score = score_calc_total(form.distanza.data,
+            score = score_calc_total(len(tph.class_autisti),
+                                     form.distanza.data,
                                      form.ritorno.data,
                                      form.pagato.data,
                                      form.speciale.data)
             update_friends_score(score, tph.class_autisti,
-                                 tph.class_passeggeri)
+                                 tph.class_passeggeri, 0)
             # SALVATAGGIO SU DATASTORE DELLA TRASFERTA
             trip = Trip(parent=current_user.key,
                         titolo=form.titolo.data,
@@ -388,16 +390,17 @@ def edit_trip(trip_id):
     form = add_trip_form(friends)
     if request.method == 'POST' and form.validate_on_submit():
         tph = Trip_POST_Handler()
-        tph.trip_post_handler(form, request, friends, 'edit_trip')
+        tph.trip_post_handler(form, request, friends, trip_id, 'edit_trip')
         if tph.class_autisti and tph.class_passeggeri:
-            new_score = score_calc_total(form.distanza.data,
+            new_score = score_calc_total(len(tph.class_autisti),
+                                         form.distanza.data,
                                          form.ritorno.data,
                                          form.pagato.data,
                                          form.speciale.data)
             update_friends_score(-trip.score_total,
-                                 trip.autisti, trip.passeggeri)
+                                 trip.autisti, trip.passeggeri, trip_id)
             update_friends_score(
-                new_score, tph.class_autisti, tph.class_passeggeri)
+                new_score, tph.class_autisti, tph.class_passeggeri, trip_id)
             trip.titolo = form.titolo.data
             trip.data = form.data.data
             trip.partenza = form.partenza.data
@@ -420,8 +423,8 @@ def edit_trip(trip_id):
                            submit_to=url_for('edit_trip', trip_id=trip_id))
 
 
-def score_calc_total(distanza, ritorno, pagato, speciale):
-    score = float(distanza)
+def score_calc_total(num_auto, distanza, ritorno, pagato, speciale):
+    score = float(distanza) * float(num_auto)
     if ritorno:
         score *= 2
     if pagato:
@@ -447,12 +450,13 @@ def trip_info(trip_id):
     return render_template('trip_info.html', trip=trip, autisti=autisti, passeggeri=passeggeri)
 
 
-@app.route('/trip/delete/<trip_id>')
+@app.route('/uscita/delete/<trip_id>')
 def delete_trip(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
     if not trip:
         return render_template('_404.html', message='Uscita non esistente'), 404
-    update_friends_score(-trip.score_total, trip.autisti, trip.passeggeri)
+    update_friends_score(-trip.score_total, trip.autisti,
+                         trip.passeggeri, trip_id)
     trip.key.delete()
     message = 'Uscita eliminata con successo'
     flash(message, 'success')
