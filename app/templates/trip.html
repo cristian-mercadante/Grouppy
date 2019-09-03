@@ -38,7 +38,7 @@
 <form class="myform" method="POST" action="{{submit_to}}">
   {{ form.hidden_tag() }}
   {{ wtf.form_field(form.titolo) }}
-  {{ wtf.form_field(form.data) }}
+  {{ wtf.form_field(form.data, placeholder='YYYY/MM/DD') }}
   {{ wtf.form_field(form.partenza) }}
   {{ wtf.form_field(form.destinazione) }}
   {{ wtf.form_field(form.distanza) }}

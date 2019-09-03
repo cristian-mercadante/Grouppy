@@ -66,9 +66,9 @@ def dashboard():
     best_friends = friends[0:2]
     worst_friends = friends[-2:]
     transazioni = Transazione.query(
-        ancestor=current_user.key).order(-Transazione.data).fetch()
+        ancestor=current_user.key).order(-Transazione.data).fetch(10)
     uscite = Trip.query(
-        ancestor=current_user.key).order(-Trip.data).fetch()
+        ancestor=current_user.key).order(-Trip.data).fetch(10)
     return render_template('dashboard.html', user=current_user, friends=friends,
                            best_friends=best_friends, worst_friends=worst_friends,
                            transazioni=transazioni, uscite=uscite)
