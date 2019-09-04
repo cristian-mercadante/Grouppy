@@ -1,5 +1,17 @@
 {% extends "_navbar.html" %}
 
+{% block head %}
+{{super()}}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (adsbygoogle = window.adsbygoogle || []).push({
+    google_ad_client: "ca-pub-5124456065883936",
+    enable_page_level_ads: true
+  });
+</script>
+{% endblock %}
+
+
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" href="{{url_for('static', filename='dashboard.css')}}">
