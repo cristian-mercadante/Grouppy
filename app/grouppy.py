@@ -1,8 +1,10 @@
+# -*- coding: utf8 -*-
+
 import appengine_config
 
 import logging
 
-from flask import Flask, url_for
+from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -36,4 +38,12 @@ else:
     import app_secrets
     app.secret_key = app_secrets.app_secret_key
 
-from app import routes
+from friend.routes import friend_bp
+from transazione.routes import transazione_bp
+from app.trip.routes import trip_bp
+from user.routes import user_bp
+
+app.register_blueprint(friend_bp)
+app.register_blueprint(transazione_bp)
+app.register_blueprint(trip_bp)
+app.register_blueprint(user_bp)

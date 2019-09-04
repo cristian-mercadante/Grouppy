@@ -9,7 +9,7 @@
   <!-- Stylesheets. -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="{{url_for('.static', filename='map_style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static', filename='map_style.css')}}">
 </head>
 
 <body>
@@ -44,7 +44,7 @@
     crossorigin="anonymous"></script>
 
   <!-- Google Maps scripts. -->
-  <script src="{{url_for('.static', filename='map_script.js')}}"></script>
+  <script src="{{url_for('static', filename='map_script.js')}}"></script>
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJpAnDBeCjFFMD-qqtknBROmWMjYkkvAA&callback=createMap&libraries=places"
     async defer></script>

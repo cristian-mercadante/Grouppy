@@ -1,12 +1,10 @@
 # -*- coding: utf8 -*-
-
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, PasswordField, BooleanField, FloatField, DateField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
-from app.models import User, Friend
 from werkzeug.security import check_password_hash
-from flask_login import login_user, current_user
+from flask_login import login_user
+from app.models import User
 
 
 class LoginForm(FlaskForm):
@@ -66,14 +64,6 @@ class RegisterForm(FlaskForm):
             raise ValidationError('La password sono diverse.')
 
 
-class AddFriendForm(FlaskForm):
-    email = StringField('Email', validators=[
-        InputRequired(), Email(message="Email non valida."), Length(max=50)])
-    nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
-    cognome = StringField('Cognome', validators=[
-                          InputRequired(), Length(max=20)])
-
-
 class UserSettingsForm(FlaskForm):
     email = StringField('Email', validators=[
         InputRequired(), Email(message="Email non valida."), Length(max=50)])
@@ -82,46 +72,3 @@ class UserSettingsForm(FlaskForm):
         email = User.query(User.email == self.email.data).fetch(1)
         if email:
             raise ValidationError(u'Email già in uso.')
-
-
-class EditFriendForm(FlaskForm):
-    email = StringField('Email', validators=[
-        InputRequired(), Email(message="Email non valida."), Length(max=50)])
-    nome = StringField('Nome', validators=[InputRequired(), Length(max=20)])
-    cognome = StringField('Cognome', validators=[
-                          InputRequired(), Length(max=20)])
-    immagine = FileField('Immagine', validators=[FileAllowed(['jpg', 'png'])])
-
-
-class TransazioneForm(FlaskForm):
-    titolo = StringField('Titolo', validators=[
-                         InputRequired(), Length(max=50)])
-    data = DateField('Data', validators=[InputRequired()], format='%Y-%m-%d')
-    costo = FloatField('Costo', validators=[InputRequired()])
-    descrizione = StringField('Descrizione', validators=[Length(max=300)])
-    submit = SubmitField('Applica')
-
-
-def add_trip_form(friends, **kwargs):
-    class AddTripForm(FlaskForm):
-        titolo = StringField('Titolo', validators=[
-            InputRequired(), Length(max=50)])
-        data = DateField('Data', validators=[InputRequired()])
-        partenza = StringField('Partenza', validators=[
-            InputRequired(), Length(max=50)])
-        destinazione = StringField('Destinazione', validators=[
-            InputRequired(), Length(max=50)])
-        distanza = FloatField('Distanza (km)', validators=[InputRequired()])
-        ritorno = BooleanField('Andata e ritorno?')
-        pagato = BooleanField(u'L\'autista è stato pagato?')
-        speciale = BooleanField(u'Era un\'occasione speciale?')
-        submit = SubmitField('Conferma')
-
-    lista = {}
-    for f in friends:
-        label = str(f.key.id())
-        nomecogn = f.nome + ' ' + f.cognome
-        field = BooleanField(nomecogn)
-        setattr(AddTripForm, label, field)
-    setattr(AddTripForm, 'submit', SubmitField('Avanti'))
-    return AddTripForm(**kwargs)

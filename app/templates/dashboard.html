@@ -15,9 +15,9 @@
     <div class="row placeholders">
       {% for bf in best_friends %}
       <div class="col-xs-6 col-sm-6 placeholder">
-        <a href="{{ url_for('friend_profile', friend_id=bf.key.id()) }}">
+        <a href="{{ url_for('friend_bp.friend_profile', friend_id=bf.key.id()) }}">
           <img width="200" height="200" class="img-responsive" {% if bf.immagine_url %}
-            src="{{bf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+            src="{{bf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('static', filename='images/default.jpg')}}"
             {% endif %}>
         </a>
         <h4>{{bf.nome}} {{bf.cognome}}</h4>
@@ -38,9 +38,9 @@
     <div class="row placeholders">
       {% for wf in worst_friends %}
       <div class="col-xs-6 col-sm-6 placeholder">
-        <a href="{{ url_for('friend_profile', friend_id=wf.key.id()) }}">
+        <a href="{{ url_for('friend_bp.friend_profile', friend_id=wf.key.id()) }}">
           <img width="200" height="200" class="img-responsive" {% if wf.immagine_url %}
-            src="{{wf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('.static', filename='images/default.jpg')}}"
+            src="{{wf.immagine_url + '=s250-c'}}" {% else %} src="{{url_for('static', filename='images/default.jpg')}}"
             {% endif %}>
         </a>
         <h4>{{wf.nome}} {{wf.cognome}}</h4>
@@ -77,7 +77,7 @@
           {% for u in uscite %}
           <tr>
             <td>
-              <a href="{{ url_for('trip_info', trip_id=u.key.id()) }}">
+              <a href="{{ url_for('trip_bp.trip_info', trip_id=u.key.id()) }}">
                 <span class="glyphicon glyphicon-info-sign"></span>
               </a>
             </td>
@@ -117,7 +117,7 @@
           {% for tr in transazioni %}
           <tr>
             <td>
-              <a href="{{ url_for('transazione_edit', transazione_id=tr.key.id()) }}">
+              <a href="{{ url_for('transazione_bp.transazione_edit', transazione_id=tr.key.id()) }}">
                 <span class="glyphicon glyphicon-pencil"></span>
               </a>
             </td>
@@ -152,10 +152,10 @@
         {% for friend in friends %}
         <tr>
           <td>
-            <a href="{{ url_for('friend_profile', friend_id=friend.key.id()) }}">
+            <a href="{{ url_for('friend_bp.friend_profile', friend_id=friend.key.id()) }}">
               <span class="glyphicon glyphicon-user"></span>
             </a>
-            <a href="{{ url_for('friend_edit', friend_id=friend.key.id()) }}">
+            <a href="{{ url_for('friend_bp.friend_edit', friend_id=friend.key.id()) }}">
               <span class="glyphicon glyphicon-pencil"></span>
             </a>
           </td>

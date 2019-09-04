@@ -7,7 +7,7 @@
 
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='form.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='form.css')}}">
 {% endblock %}
 
 {% block _content %}

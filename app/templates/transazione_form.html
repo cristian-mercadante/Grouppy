@@ -3,7 +3,7 @@
 
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='dashboard_form.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='dashboard_form.css')}}">
 
 <link rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
@@ -64,7 +64,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-          <a href="{{ url_for('transazione_delete', transazione_id=transazione.key.id()) }}" class="btn btn-danger">
+          <a href="{{ url_for('transazione_bp.transazione_delete', transazione_id=transazione.key.id()) }}"
+            class="btn btn-danger">
             Elimina
           </a>
         </div>

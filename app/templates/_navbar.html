@@ -6,8 +6,8 @@ Grouppy
 
 {% block styles %}
 {{super()}}
-<link rel="stylesheet" href="{{url_for('.static', filename='navbar.css')}}">
-<link rel="shortcut icon" href="{{ url_for('.static', filename='images/favicon.ico') }}">
+<link rel="stylesheet" href="{{url_for('static', filename='navbar.css')}}">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 {% endblock %}
 
 {% block content %}
@@ -22,20 +22,20 @@ Grouppy
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{url_for('index')}}">
-        <img style="position: relative; z-index: 1" src="{{url_for('.static', filename='images/logo_200.png')}}"
+      <a class="navbar-brand" href="{{url_for('user_bp.index')}}">
+        <img style="position: relative; z-index: 1" src="{{url_for('static', filename='images/logo_200.png')}}"
           alt="Grouppy">
       </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
-        <li class="right-menuitem"><a href="{{url_for('dashboard')}}">Dashboard</a></li>
-        <li class="right-menuitem"><a href="{{url_for('user_settings')}}">Impostazioni</a></li>
-        <li class="right-menuitem"><a href="{{url_for('logout')}}">Log Out</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_bp.dashboard')}}">Dashboard</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_bp.user_settings')}}">Impostazioni</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_bp.logout')}}">Log Out</a></li>
         {% else %}
-        <li class="right-menuitem"><a href="{{url_for('login')}}">Log In</a></li>
-        <li class="right-menuitem"><a href="{{url_for('signup')}}">Sign Up</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_bp.login')}}">Log In</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user_bp.signup')}}">Sign Up</a></li>
         {% endif %}
       </ul>
     </div>
