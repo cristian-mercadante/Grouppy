@@ -6,35 +6,30 @@ from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 
 
-user_bp = Blueprint('user_bp', __name__)
+user = Blueprint('user', __name__)
 
 
-@user_bp.errorhandler(404)
-def page_not_found(e):
-    return render_template('_404.html'), 404
-
-
-@user_bp.route('/')
+@user.route('/')
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     return render_template('index.html')
 
 
-@user_bp.route('/login', methods=['GET', 'POST'])
+@user.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     form = LoginForm()
     if form.log_in():
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     return render_template('login.html', form=form)
 
 
-@user_bp.route('/signup', methods=['GET', 'POST'])
+@user.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = generate_password_hash(
@@ -42,18 +37,18 @@ def signup():
         new_user = User(id=form.username.data, username=form.username.data,
                         email=form.email.data, password=hashed_password)
         new_user.put()
-        return redirect(url_for('user_bp.login'))
+        return redirect(url_for('user.login'))
     return render_template('signup.html', form=form)
 
 
-@user_bp.route('/logout')
+@user.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('user_bp.index'))
+    return redirect(url_for('user.index'))
 
 
-@user_bp.route('/dashboard')
+@user.route('/dashboard')
 @login_required
 def dashboard():
     friends = Friend.query(
@@ -69,14 +64,14 @@ def dashboard():
                            transazioni=transazioni, uscite=uscite)
 
 
-@user_bp.route('/user_settings', methods=['GET', 'POST'])
+@user.route('/settings', methods=['GET', 'POST'])
 @login_required
-def user_settings():
+def settings():
     form = UserSettingsForm()
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.put()
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
         form.email.data = current_user.email
     return render_template('user_settings.html', form=form)
@@ -84,7 +79,7 @@ def user_settings():
 
 # GOOGLE MAPS API INTEGRATION
 '''
-@user_bp.route('/map_test')
+@user.route('/map_test')
 def map_test():
     return render_template('map_test.html')
 '''

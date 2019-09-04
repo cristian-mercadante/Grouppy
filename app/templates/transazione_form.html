@@ -64,8 +64,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-          <a href="{{ url_for('transazione_bp.transazione_delete', transazione_id=transazione.key.id()) }}"
-            class="btn btn-danger">
+          <a href="{{ url_for('transazione.delete', transazione_id=transazione.key.id()) }}" class="btn btn-danger">
             Elimina
           </a>
         </div>

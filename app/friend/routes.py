@@ -11,12 +11,12 @@ from google.appengine.api import images
 import werkzeug
 
 
-friend_bp = Blueprint('friend_bp', __name__)
+friend = Blueprint('friend', __name__)
 
 
-@friend_bp.route('/friend/add', methods=['GET', 'POST'])
+@friend.route('/add', methods=['GET', 'POST'])
 @login_required
-def add_friend():
+def add():
     form = AddFriendForm()
     if form.validate_on_submit():
         new_friend = Friend(email=form.email.data, nome=form.nome.data,
@@ -24,13 +24,13 @@ def add_friend():
         new_friend.put()
         message = new_friend.nome + " " + new_friend.cognome + " aggiunto con successo!"
         flash(message, 'success')
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     return render_template('add_friend.html', form=form)
 
 
-@friend_bp.route('/friend/<friend_id>')
+@friend.route('/profile/<friend_id>')
 @login_required
-def friend_profile(friend_id):
+def profile(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
@@ -38,9 +38,9 @@ def friend_profile(friend_id):
     return render_template('friend_profile.html', friend=friend, trip_auto=trip_auto, trip_pass=trip_pass)
 
 
-@friend_bp.route('/friend/edit/<friend_id>', methods=['GET', 'POST'])
+@friend.route('/edit/<friend_id>', methods=['GET', 'POST'])
 @login_required
-def friend_edit(friend_id):
+def edit(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
@@ -66,19 +66,19 @@ def friend_edit(friend_id):
         friend.put()
         message = friend.nome + " " + friend.cognome + " modificato con successo!"
         flash(message, 'success')
-        return redirect(url_for('friend_bp.friend_profile', friend_id=friend_id))
+        return redirect(url_for('friend.profile', friend_id=friend_id))
     elif request.method == 'GET':
         form.email.data = friend.email
         form.nome.data = friend.nome
         form.cognome.data = friend.cognome
         upload_url = blobstore.create_upload_url(
-            url_for('friend_bp.friend_edit', friend_id=friend_id))
+            url_for('friend.edit', friend_id=friend_id))
     return render_template('friend_edit.html', friend=friend, form=form, upload_url=upload_url)
 
 
-@friend_bp.route('/friend/pic_reset/<friend_id>')
+@friend.route('/pic_reset/<friend_id>')
 @login_required
-def friend_pic_reset(friend_id):
+def pic_reset(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
@@ -89,12 +89,12 @@ def friend_pic_reset(friend_id):
         friend.put()
     message = 'Immagine eliminata con successo!'
     flash(message, 'success')
-    return redirect(url_for('friend_bp.friend_profile', friend_id=friend_id))
+    return redirect(url_for('friend.profile', friend_id=friend_id))
 
 
-@friend_bp.route('/friend/delete/<friend_id>')
+@friend.route('/delete/<friend_id>')
 @login_required
-def friend_delete(friend_id):
+def delete(friend_id):
     friend = Friend.get_by_id(int(friend_id), parent=current_user.key)
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
@@ -103,4 +103,4 @@ def friend_delete(friend_id):
         blobstore.BlobInfo.get(friend.immagine_blob_key).delete()
     friend.key.delete()
     flash(message, 'success')
-    return redirect(url_for('user_bp.dashboard'))
+    return redirect(url_for('user.dashboard'))

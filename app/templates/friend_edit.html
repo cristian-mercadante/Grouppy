@@ -19,7 +19,7 @@
       {% endif %}>
     {% if friend.immagine_url %}
     <div class="text-center" style="margin-top: 10pt">
-      <a href="{{url_for('friend_bp.friend_pic_reset', friend_id=friend.key.id())}}" class="btn btn-warning">Reset</a>
+      <a href="{{url_for('friend.pic_reset', friend_id=friend.key.id())}}" class="btn btn-warning">Reset</a>
     </div>
     {% endif %}
 

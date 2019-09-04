@@ -51,7 +51,7 @@
     <h4>Autisti ({{ autisti | length }})</h4>
     {% for a in autisti %}
     {% if a %}
-    <a href="{{url_for('friend_bp.friend_profile', friend_id=a.key.id())}}">{{a.nome}} {{a.cognome}}</a><br>
+    <a href="{{url_for('friend.profile', friend_id=a.key.id())}}">{{a.nome}} {{a.cognome}}</a><br>
     {% else %}
     Amico non esistente<br>
     {% endif %}
@@ -62,7 +62,7 @@
     <h4>Passeggeri ({{ passeggeri | length }})</h4>
     {% for p in passeggeri %}
     {% if p %}
-    <a href="{{url_for('friend_bp.friend_profile', friend_id=p.key.id())}}">{{p.nome}} {{p.cognome}}</a><br>
+    <a href="{{url_for('friend.profile', friend_id=p.key.id())}}">{{p.nome}} {{p.cognome}}</a><br>
     {% else %}
     Amico non esistente<br>
     {% endif %}
@@ -72,7 +72,7 @@
 </div>
 
 <div class="container" style="text-align: center">
-  <a href="{{ url_for('trip_bp.edit_trip', trip_id=trip.key.id(),
+  <a href="{{ url_for('trip.edit', trip_id=trip.key.id(),
   titolo=trip.titolo,
   data=trip.data,
   partenza=trip.partenza,
@@ -105,7 +105,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-        <a href="{{ url_for('trip_bp.delete_trip', trip_id=trip.key.id()) }}" class="btn btn-danger">
+        <a href="{{ url_for('trip.delete', trip_id=trip.key.id()) }}" class="btn btn-danger">
           Elimina
         </a>
       </div>

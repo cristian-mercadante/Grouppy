@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from datetime import datetime
 
 
-trip_bp = Blueprint('trip_bp', __name__)
+trip = Blueprint('trip', __name__)
 
 
 def get_trips(friend_id):
@@ -25,7 +25,7 @@ def get_trips(friend_id):
 def trip_error_redirection(form, message, style, trip_id, endpoint):
     flash(message, style)
     if not form:
-        return redirect(url_for('user_bp.dashboard'))
+        return redirect(url_for('user.dashboard'))
     return redirect(url_for(endpoint,
                             trip_id=trip_id,
                             titolo=form.titolo.data,
@@ -108,19 +108,30 @@ def update_friends_score(score, form, autisti, passeggeri, trip_id, endpoint):
         f.put()
 
 
-@trip_bp.route('/uscita/add', methods=['GET', 'POST'])
+def score_calc_total(num_auto, distanza, ritorno, pagato, speciale):
+    score = float(distanza) * float(num_auto)
+    if ritorno:
+        score *= 2
+    if pagato:
+        score /= 10
+    if speciale:
+        score *= 1.1
+    return score
+
+
+@trip.route('/add', methods=['GET', 'POST'])
 @login_required
-def add_trip():
+def add():
     friends = Friend.query(ancestor=current_user.key).fetch()
     if len(friends) < 2:
         message = u'Prima di aggiungere un\'uscita, è necessario aggiungere almeno 2 amici: aggiungine {}'.format(
             2 - len(friends))
         flash(message, 'warning')
-        return redirect(url_for('friend_bp.add_friend'))
+        return redirect(url_for('friend.add'))
     form = add_trip_form(friends)
     if request.method == 'POST' and form.validate_on_submit():
         tph = Trip_POST_Handler()
-        tph.trip_post_handler(form, request, friends, 0, 'trip_bp.add_trip')
+        tph.trip_post_handler(form, request, friends, 0, 'trip.add')
         if tph.class_autisti and tph.class_passeggeri:
             # Aggironamento punteggi
             score = score_calc_total(len(tph.class_autisti),
@@ -129,7 +140,7 @@ def add_trip():
                                      form.pagato.data,
                                      form.speciale.data)
             update_friends_score(score, form, tph.class_autisti,
-                                 tph.class_passeggeri, 0, 'trip_bp.add_trip')
+                                 tph.class_passeggeri, 0, 'trip.add')
             # SALVATAGGIO SU DATASTORE DELLA TRASFERTA
             trip = Trip(parent=current_user.key,
                         titolo=form.titolo.data,
@@ -147,15 +158,15 @@ def add_trip():
 
             message = 'Uscita aggiunta con successo'
             flash(message, 'success')
-            return redirect(url_for('user_bp.dashboard'))
+            return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
         trip_get_handler(form, request)
-    return render_template('trip.html', form=form, friends=friends, submit_to=url_for('trip_bp.add_trip'))
+    return render_template('trip.html', form=form, friends=friends, submit_to=url_for('trip.add'))
 
 
-@trip_bp.route('/uscita/edit/<trip_id>', methods=['GET', 'POST'])
+@trip.route('/edit/<trip_id>', methods=['GET', 'POST'])
 @login_required
-def edit_trip(trip_id):
+def edit(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
     if not trip:
         return render_template('_404.html', message='Uscita non esistente'), 404
@@ -164,7 +175,7 @@ def edit_trip(trip_id):
     if request.method == 'POST' and form.validate_on_submit():
         tph = Trip_POST_Handler()
         tph.trip_post_handler(form, request, friends,
-                              trip_id, 'trip_bp.edit_trip')
+                              trip_id, 'trip.edit')
         if tph.class_autisti and tph.class_passeggeri:
             new_score = score_calc_total(len(tph.class_autisti),
                                          form.distanza.data,
@@ -172,9 +183,9 @@ def edit_trip(trip_id):
                                          form.pagato.data,
                                          form.speciale.data)
             update_friends_score(-trip.score_total, form,
-                                 trip.autisti, trip.passeggeri, trip_id, 'trip_bp.edit_trip')
+                                 trip.autisti, trip.passeggeri, trip_id, 'trip.edit')
             update_friends_score(
-                new_score, form, tph.class_autisti, tph.class_passeggeri, trip_id, 'trip_bp.edit_trip')
+                new_score, form, tph.class_autisti, tph.class_passeggeri, trip_id, 'trip.edit')
             trip.titolo = form.titolo.data
             trip.data = form.data.data
             trip.partenza = form.partenza.data
@@ -190,27 +201,16 @@ def edit_trip(trip_id):
 
             message = 'Uscita modificata con successo'
             flash(message, 'success')
-            return redirect(url_for('user_bp.dashboard'))
+            return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
         trip_get_handler(form, request)
     return render_template('trip.html', form=form, friends=friends,
-                           submit_to=url_for('trip_bp.edit_trip', trip_id=trip_id))
+                           submit_to=url_for('trip.edit', trip_id=trip_id))
 
 
-def score_calc_total(num_auto, distanza, ritorno, pagato, speciale):
-    score = float(distanza) * float(num_auto)
-    if ritorno:
-        score *= 2
-    if pagato:
-        score /= 10
-    if speciale:
-        score *= 1.1
-    return score
-
-
-@trip_bp.route('/uscita/<trip_id>')
+@trip.route('/<trip_id>')
 @login_required
-def trip_info(trip_id):
+def info(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
     if not trip:
         return render_template('_404.html', message='Uscita non esistente'), 404
@@ -225,15 +225,15 @@ def trip_info(trip_id):
     return render_template('trip_info.html', trip=trip, autisti=autisti, passeggeri=passeggeri)
 
 
-@trip_bp.route('/uscita/delete/<trip_id>')
+@trip.route('/delete/<trip_id>')
 @login_required
-def delete_trip(trip_id):
+def delete(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
     if not trip:
         return render_template('_404.html', message='Uscita non esistente'), 404
     update_friends_score(-trip.score_total, None, trip.autisti,
-                         trip.passeggeri, trip_id, url_for('trip_bp.trip_info', trip_id=trip_id))
+                         trip.passeggeri, trip_id, url_for('trip.info', trip_id=trip_id))
     trip.key.delete()
     message = 'Uscita eliminata con successo'
     flash(message, 'success')
-    return redirect(url_for('user_bp.dashboard'))
+    return redirect(url_for('user.dashboard'))

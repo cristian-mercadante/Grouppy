@@ -4,7 +4,7 @@ import appengine_config
 
 import logging
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -18,7 +18,7 @@ Bootstrap(app)
 # LOGIN
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'user.login'
 login_manager.login_message_category = 'info'
 
 from app.models import User
@@ -27,6 +27,11 @@ from app.models import User
 @login_manager.user_loader
 def load_user(user_id):
     return User.get_by_id(user_id)
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('_404.html'), 404
 
 
 # setting the secret key
@@ -38,12 +43,12 @@ else:
     import app_secrets
     app.secret_key = app_secrets.app_secret_key
 
-from friend.routes import friend_bp
-from transazione.routes import transazione_bp
-from app.trip.routes import trip_bp
-from user.routes import user_bp
+from friend.routes import friend
+from transazione.routes import transazione
+from app.trip.routes import trip
+from user.routes import user
 
-app.register_blueprint(friend_bp)
-app.register_blueprint(transazione_bp)
-app.register_blueprint(trip_bp)
-app.register_blueprint(user_bp)
+app.register_blueprint(friend, url_prefix='/friend')
+app.register_blueprint(transazione, url_prefix='/transazione')
+app.register_blueprint(trip, url_prefix='/trip')
+app.register_blueprint(user)

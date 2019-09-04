@@ -22,7 +22,7 @@ Grouppy
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="{{url_for('user_bp.index')}}">
+      <a class="navbar-brand" href="{{url_for('user.index')}}">
         <img style="position: relative; z-index: 1" src="{{url_for('static', filename='images/logo_200.png')}}"
           alt="Grouppy">
       </a>
@@ -30,12 +30,12 @@ Grouppy
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         {% if current_user.is_authenticated %}
-        <li class="right-menuitem"><a href="{{url_for('user_bp.dashboard')}}">Dashboard</a></li>
-        <li class="right-menuitem"><a href="{{url_for('user_bp.user_settings')}}">Impostazioni</a></li>
-        <li class="right-menuitem"><a href="{{url_for('user_bp.logout')}}">Log Out</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user.dashboard')}}">Dashboard</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user.settings')}}">Impostazioni</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user.logout')}}">Log Out</a></li>
         {% else %}
-        <li class="right-menuitem"><a href="{{url_for('user_bp.login')}}">Log In</a></li>
-        <li class="right-menuitem"><a href="{{url_for('user_bp.signup')}}">Sign Up</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user.login')}}">Log In</a></li>
+        <li class="right-menuitem"><a href="{{url_for('user.signup')}}">Sign Up</a></li>
         {% endif %}
       </ul>
     </div>

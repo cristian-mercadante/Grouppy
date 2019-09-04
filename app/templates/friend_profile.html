@@ -19,7 +19,7 @@
   <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
     <h3>{{friend.email}}</h3>
     <h3>Score: {{ friend.score | round(2, 'common')}}</h3>
-    <a href="{{ url_for('friend_bp.friend_edit', friend_id=friend.key.id()) }}" class="btn btn-primary">
+    <a href="{{ url_for('friend.edit', friend_id=friend.key.id()) }}" class="btn btn-primary">
       <span class="glyphicon glyphicon-pencil"></span> Modifica
     </a>
     <!-- Button trigger modal -->
@@ -50,7 +50,7 @@
           {% for t in trip_auto %}
           <tr>
             <td>
-              <a href="{{ url_for('trip_bp.trip_info', trip_id=t.key.id()) }}">
+              <a href="{{ url_for('trip.info', trip_id=t.key.id()) }}">
                 <span class="glyphicon glyphicon-info-sign"></span>
               </a>
             </td>
@@ -87,7 +87,7 @@
           {% for t in trip_pass %}
           <tr>
             <td>
-              <a href="{{ url_for('trip_bp.trip_info', trip_id=t.key.id()) }}">
+              <a href="{{ url_for('trip.info', trip_id=t.key.id()) }}">
                 <span class="glyphicon glyphicon-info-sign"></span>
               </a>
             </td>
@@ -122,7 +122,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Chiudi</button>
-        <a href="{{ url_for('friend_bp.friend_delete', friend_id=friend.key.id()) }}" class="btn btn-danger">
+        <a href="{{ url_for('friend.delete', friend_id=friend.key.id()) }}" class="btn btn-danger">
           Elimina
         </a>
       </div>
