@@ -208,7 +208,7 @@ def edit(trip_id):
                            submit_to=url_for('trip.edit', trip_id=trip_id))
 
 
-@trip.route('/<trip_id>')
+@trip.route('/info/<trip_id>')
 @login_required
 def info(trip_id):
     trip = Trip.get_by_id(int(trip_id), parent=current_user.key)
@@ -237,3 +237,10 @@ def delete(trip_id):
     message = 'Uscita eliminata con successo'
     flash(message, 'success')
     return redirect(url_for('user.dashboard'))
+
+
+@trip.route('/view')
+@login_required
+def view():
+    trips = Trip.query(ancestor=current_user.key).fetch()
+    return render_template('trip_view.html', trips=trips)

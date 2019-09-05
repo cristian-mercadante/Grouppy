@@ -1,0 +1,88 @@
+{% extends "_page.html" %}
+
+{% block scripts %}
+{{super()}}
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#trip_table').DataTable({
+      "order": [[2, "desc"]]
+    });
+    $('.dataTables_length').addClass('bs-select');
+  });
+</script>
+{% endblock %}
+
+{% block page_content %}
+<h1 class="page-header">Uscite</h1>
+
+{% if not trips %}
+<p>Non ci sono uscite</p>
+
+{% else %}
+
+<div class="table-responsive">
+  <table id="trip_table" class="table table-striped">
+    <thead>
+      <tr>
+        <th class="th-sm"></th>
+        <th class="th-sm">Titolo</th>
+        <th class="th-sm">Data</th>
+        <th class="th-sm">Partenza</th>
+        <th class="th-sm">Destinazione</th>
+        <th class="th-sm">KM</th>
+        <th class="th-sm">#🚗</th>
+        <th class="th-sm">#🙋</th>
+        <th class="th-sm">A/R</th>
+        <th class="th-sm">💰</th>
+        <th class="th-sm">⭐</th>
+        <th class="th-sm">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in trips %}
+      <tr>
+        <td>
+          <a href="{{ url_for('trip.info', trip_id=t.key.id()) }}">
+            <span class="glyphicon glyphicon-info-sign"></span>
+          </a>
+        </td>
+        <td>{{t.titolo}}</td>
+        <td>{{t.data}}</td>
+        <td>{{t.partenza}}</td>
+        <td>{{t.destinazione}}</td>
+        <td>{{t.distanza}}</td>
+        <td>{{t.autisti | length}}</td>
+        <td>{{t.passeggeri | length}}</td>
+        <td>
+          {% if t.ritorno %}
+          <span class="glyphicon glyphicon-ok" style="color: green"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove" style="color: red"></span>
+          {% endif %}
+        </td>
+        <td>
+          {% if t.pagato %}
+          <span class="glyphicon glyphicon-ok" style="color: green"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove" style="color: red"></span>
+          {% endif %}
+        </td>
+        <td>
+          {% if t.speciale %}
+          <span class="glyphicon glyphicon-ok" style="color: green"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-remove" style="color: red"></span>
+          {% endif %}
+        </td>
+        <td>{{t.score_total}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endif %}
+
+{% endblock %}

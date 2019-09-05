@@ -76,3 +76,10 @@ def delete(transazione_id):
     transazione.key.delete()
     flash(message, 'success')
     return redirect(url_for('user.dashboard'))
+
+
+@transazione.route('/view')
+@login_required
+def view():
+    transazioni = Transazione.query(ancestor=current_user.key).fetch()
+    return render_template('transazione_view.html', transazioni=transazioni)

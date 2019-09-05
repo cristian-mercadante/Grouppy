@@ -24,15 +24,19 @@
     <div class="col-sm-3 col-md-2 sidebar">
       {% if current_user.is_authenticated %}
       <ul class="nav nav-sidebar">
-        <li><a href="{{url_for('friend.add')}}"><span class="glyphicon glyphicon-plus"></span> Aggiungi
-            amico</a>
+        <li><a href="{{url_for('friend.add')}}"><span class="glyphicon glyphicon-plus"></span> Aggiungi amico</a></li>
+        <li><a href="{{url_for('trip.add')}}"><span class="glyphicon glyphicon-plus"></span> Aggiungi uscita</a></li>
+        <li><a href="{{url_for('transazione.add')}}">
+            <span class="glyphicon glyphicon-plus"></span> Aggiungi transazione</a>
         </li>
-        <li><a href="{{url_for('trip.add')}}"><span class="glyphicon glyphicon-plus"></span> Aggiungi
-            uscita</a></li>
-        <li><a href="{{url_for('transazione.add')}}"><span class="glyphicon glyphicon-plus"></span>
-            Aggiungi
-            transazione</a></li>
-        <!--<li><a href="#"><span class="glyphicon glyphicon-info-sign"></span> Tutte le uscite </a></li>-->
+      </ul>
+      <ul class="nav nav-sidebar" style="margin-top: 5pt">
+        <li><a href="{{url_for('trip.view')}}">
+            <span class="glyphicon glyphicon-info-sign"></span> Tutte le uscite </a>
+        </li>
+        <li><a href="{{url_for('transazione.view')}}">
+            <span class="glyphicon glyphicon-info-sign"></span> Tutte le transazioni</a>
+        </li>
       </ul>
       {% endif %}
     </div>

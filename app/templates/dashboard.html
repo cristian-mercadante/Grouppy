@@ -86,11 +86,12 @@
             <td>{{u.partenza}}</td>
             <td>{{u.destinazione}}</td>
             <td>{{u.distanza}}</td>
-          </tr> {% endfor %}
+          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
-    <a href="#">Mostra tutte</a>
+    <a href="{{url_for('trip.view')}}">Mostra tutte</a>
     {% else %}
     <div>
       Non ci sono uscite.
@@ -125,11 +126,12 @@
             <td>{{tr.data}}</td>
             <td>{{"%.2f"|format(tr.costo)}}</td>
             <td>{{tr.descrizione}}</td>
-          </tr> {% endfor %}
+          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
-    <a href="#">Mostra tutte</a>
+    <a href="{{url_for('transazione.view')}}">Mostra tutte</a>
     {% else %}
     Non ci sono transazioni.
     {% endif %}

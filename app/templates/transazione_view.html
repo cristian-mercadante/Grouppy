@@ -1,0 +1,60 @@
+{% extends "_page.html" %}
+
+{% block scripts %}
+{{super()}}
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#transazione_table').DataTable({
+      "order": [[2, "desc"]]
+    });
+    $('.dataTables_length').addClass('bs-select');
+  });
+</script>
+{% endblock %}
+
+{% block page_content %}
+<h1 class="page-header">Transazioni</h1>
+
+{% if not transazioni %}
+<p>Non ci sono transazioni</p>
+
+{% else %}
+
+<div class="table-responsive">
+  <table id="transazione_table" class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Titolo</th>
+        <th>Data</th>
+        <th>€</th>
+        <th>Descrizione</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tr in transazioni %}
+      <tr>
+        <td>
+          <a href="{{ url_for('transazione.edit', transazione_id=tr.key.id()) }}">
+            <span class="glyphicon glyphicon-pencil"></span>
+          </a>
+        </td>
+        <td>{{tr.titolo}}</td>
+        <td>{{tr.data}}</td>
+        <td
+        {% if tr.costo < 0 %} style="color: red"
+        {% elif tr.costo > 0 %} style="color:green"
+        {% endif %}>{{"%.2f"|format(tr.costo)}}</td>
+        <td>{{tr.descrizione}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endif %}
+
+
+{% endblock %}
