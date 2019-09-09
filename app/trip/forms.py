@@ -20,11 +20,12 @@ def add_trip_form(friends, **kwargs):
         speciale = BooleanField(u'Era un\'occasione speciale?')
         submit = SubmitField('Conferma')
 
-    lista = {}
     for f in friends:
-        label = str(f.key.id())
+        label_auto = 'auto' + str(f.key.id())
+        label_pass = 'pass' + str(f.key.id())
         nomecogn = f.nome + ' ' + f.cognome
-        field = BooleanField(nomecogn)
-        setattr(AddTripForm, label, field)
-    setattr(AddTripForm, 'submit', SubmitField('Avanti'))
+        field_auto = BooleanField(nomecogn)
+        field_pass = BooleanField(nomecogn)
+        setattr(AddTripForm, label_auto, field_auto)
+        setattr(AddTripForm, label_pass, field_pass)
     return AddTripForm(**kwargs)

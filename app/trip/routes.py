@@ -39,7 +39,7 @@ def trip_error_redirection(form, message, style, trip_id, endpoint):
                             ))
 
 
-def trip_get_handler(form, request):
+def trip_get_handler(form, request, trip=None):
     form.titolo.data = request.args.get('titolo')
     if request.args.get('data'):
         form.data.data = datetime.strptime(
@@ -53,6 +53,15 @@ def trip_get_handler(form, request):
         form.pagato.data = 'y'
     if request.args.get('speciale') == 'True':
         form.speciale.data = 'y'
+    if trip:
+        for a in trip.autisti:
+            label = 'auto' + str(a)
+            if hasattr(form, label):
+                getattr(form, label).data = 'y'
+        for p in trip.passeggeri:
+            label = 'pass' + str(p)
+            if hasattr(form, label):
+                getattr(form, label).data = 'y'
 
 
 class Trip_POST_Handler():
@@ -161,7 +170,7 @@ def add():
             return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
         trip_get_handler(form, request)
-    return render_template('trip.html', form=form, friends=friends, submit_to=url_for('trip.add'))
+    return render_template('trip.html', titolo='Aggiungi uscita', form=form, friends=friends, submit_to=url_for('trip.add'))
 
 
 @trip.route('/edit/<trip_id>', methods=['GET', 'POST'])
@@ -203,8 +212,8 @@ def edit(trip_id):
             flash(message, 'success')
             return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
-        trip_get_handler(form, request)
-    return render_template('trip.html', form=form, friends=friends,
+        trip_get_handler(form, request, trip)
+    return render_template('trip.html', titolo='Modifica uscita', form=form, friends=friends,
                            submit_to=url_for('trip.edit', trip_id=trip_id))
 
 

@@ -33,7 +33,7 @@
 
 
 {% block page_content %}
-<h1 class="page-header"> Aggiungi uscita </h1>
+<h1 class="page-header"> {{titolo}} </h1>
 
 <form class="myform" method="POST" action="{{submit_to}}">
   {{ form.hidden_tag() }}
@@ -49,18 +49,14 @@
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <h5><strong>Autisti</strong></h5>
       {% for f in friends %}
-      <input type="checkbox" id={{'auto' + f.key.id()|string}} name={{'auto' + f.key.id()|string}}
-        value="{{f.nome + ' ' + f.cognome}}">
-      {{f.nome + ' ' + f.cognome}}<br>
+      {{ wtf.form_field(form['auto' + f.key.id() | string]) }}
       {% endfor %}
     </div>
 
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
       <h5><strong>Passeggeri</strong></h5>
       {% for f in friends %}
-      <input type="checkbox" id={{'pass' + f.key.id()|string}} name={{'pass' + f.key.id()|string}}
-        value="{{f.nome + ' ' + f.cognome}}">
-      {{f.nome + ' ' + f.cognome}}<br>
+      {{ wtf.form_field(form['pass' + f.key.id() | string]) }}
       {% endfor %}
     </div>
   </div>
