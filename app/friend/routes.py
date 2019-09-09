@@ -4,7 +4,7 @@ from flask import render_template, url_for, redirect, request, flash, Blueprint
 from forms import AddFriendForm, EditFriendForm
 from app.models import Friend
 from flask_login import login_required, current_user
-from app.trip.routes import get_trips
+from app.trip.routes import get_trips, get_auto_pass_scores
 
 from google.appengine.ext import blobstore
 from google.appengine.api import images
@@ -35,7 +35,7 @@ def profile(friend_id):
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
     trip_auto, trip_pass = get_trips(int(friend_id))
-    return render_template('friend_profile.html', friend=friend, trip_auto=trip_auto, trip_pass=trip_pass)
+    return render_template('friend_profile.html', friend=friend, trip_auto=trip_auto, trip_pass=trip_pass, score_func=get_auto_pass_scores)
 
 
 @friend.route('/edit/<friend_id>', methods=['GET', 'POST'])

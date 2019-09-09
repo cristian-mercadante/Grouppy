@@ -102,10 +102,17 @@ class Trip_POST_Handler():
         self.class_passeggeri = passeggeri
 
 
+def get_auto_pass_scores(score, num_auto, num_pass):
+    total = num_auto + num_pass
+    score_passeggero = - score / total
+    score_autista = score / num_auto + score_passeggero
+    return score_autista, score_passeggero
+
+
 def update_friends_score(score, form, autisti, passeggeri, trip_id, endpoint):
     persone = autisti + passeggeri
-    score_passeggero = - score / len(persone)
-    score_autista = score / len(autisti) + score_passeggero
+    score_autista, score_passeggero = get_auto_pass_scores(
+        score, len(autisti), len(passeggeri))
     for p in persone:
         f = Friend.get_by_id(long(p), parent=current_user.key)
         if not f:
