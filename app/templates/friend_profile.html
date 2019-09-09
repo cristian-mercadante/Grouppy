@@ -60,7 +60,8 @@
             <td>{{t.partenza}}</td>
             <td>{{t.destinazione}}</td>
             <td>{{t.distanza}}</td>
-            <td style="color:green">+{{score_func(t.score_total, t.autisti | length, t.passeggeri | length)[0]}}</td>
+            <td style="color:green">
+              +{{score_func(t.score_total, t.autisti | length, t.passeggeri | length)[0] | round(2, 'common')}}</td>
           </tr> {% endfor %}
         </tbody>
       </table>
@@ -99,7 +100,8 @@
             <td>{{t.partenza}}</td>
             <td>{{t.destinazione}}</td>
             <td>{{t.distanza}}</td>
-            <td style="color:red">{{score_func(t.score_total, t.autisti | length, t.passeggeri | length)[1]}}</td>
+            <td style="color:red">
+              {{score_func(t.score_total, t.autisti | length, t.passeggeri | length)[1] | round(2, 'common')}}</td>
           </tr> {% endfor %}
         </tbody>
       </table>
