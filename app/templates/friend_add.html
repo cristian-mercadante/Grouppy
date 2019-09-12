@@ -13,10 +13,10 @@
 
 <form class="myform" method="POST" action="{{url_for('friend.add')}}">
   {{ form.hidden_tag() }}
-  {{ wtf.form_field(form.email) }}
-  {{ wtf.form_field(form.nome) }}
-  {{ wtf.form_field(form.cognome) }}
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Aggiungi!</button>
+  {{ wtf.form_field(form.nome, placeholder='Mario') }}
+  {{ wtf.form_field(form.cognome, placeholder='Rossi') }}
+  {{ wtf.form_field(form.email, placeholder='mario@rossi.it') }}
+  {{ wtf.form_field(form.submit, class='btn btn-block btn-primary') }}
   <div class="container"></div>
 </form>
 

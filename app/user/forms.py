@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from werkzeug.security import check_password_hash
 from flask_login import login_user
@@ -13,6 +13,7 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[
                              InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('Ricordami')
+    submit = SubmitField('Accedi')
 
     def __init__(self, *k, **kk):
         self._user = None
@@ -48,6 +49,7 @@ class RegisterForm(FlaskForm):
         InputRequired(), Length(min=8, max=80)])
     confirm_password = PasswordField('Conferma password', validators=[
         InputRequired(), Length(min=8, max=80)])
+    submit = SubmitField('Iscriviti')
 
     def validate_username(self, username):
         user = User.get_by_id(self.username.data)
@@ -67,6 +69,7 @@ class RegisterForm(FlaskForm):
 class UserSettingsForm(FlaskForm):
     email = StringField('Email', validators=[
         InputRequired(), Email(message="Email non valida."), Length(max=50)])
+    submit = SubmitField('Conferma')
 
     def validate_email(self, email):
         email = User.query(User.email == self.email.data).fetch(1)

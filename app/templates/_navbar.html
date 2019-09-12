@@ -10,6 +10,24 @@ Grouppy
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 {% endblock %}
 
+{% block scripts %}
+{{super()}}
+<script>
+  function copyToClipboard() {
+    /* Get the text field */
+    var copyText = document.getElementById("share_link");
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+  }
+</script>
+{% endblock %}
+
+
 {% block content %}
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <p class="navbar-text navbar-center">Grouppy</p>
@@ -32,6 +50,7 @@ Grouppy
         {% if current_user.is_authenticated %}
         <li class="right-menuitem"><a href="{{url_for('user.dashboard')}}">Dashboard</a></li>
         <li class="right-menuitem"><a href="{{url_for('user.settings')}}">Impostazioni</a></li>
+        <li class="right-menuitem"><a href="#" data-toggle="modal" data-target="#ShareModal">Condividi</a></li>
         <li class="right-menuitem"><a href="{{url_for('user.logout')}}">Log Out</a></li>
         {% else %}
         <li class="right-menuitem"><a href="{{url_for('user.login')}}">Log In</a></li>
@@ -41,6 +60,32 @@ Grouppy
     </div>
   </div>
 </nav>
+
+<!-- Modal -->
+<div class="modal fade" id="ShareModal" tabindex="-1" role="dialog" aria-labelledby="ShareModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ShareModalLabel">
+          <strong>Condividi Grouppy!</strong>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <input id="share_link" type="text" class="form-control" readonly="readonly"
+          value="http://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
+        <hr>
+        <button class="btn btn-info" type="button" onclick="copyToClipboard()">
+          <span class="glyphicon glyphicon-copy"></span> Copia
+        </button>
+        <a class="btn btn-success"
+          href="https://api.whatsapp.com/send?text=http://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
+          Condividi Link su WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 {% block _content %}

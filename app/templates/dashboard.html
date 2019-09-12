@@ -100,8 +100,7 @@
   </div>
 
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-    <h2 class="sub-header">Cassa comune</h2>
-    <h2 style="margin-top: 0pt">{{ "%.2f €"|format(user.cassa) }}</h2>
+    <h2 class="sub-header">Cassa comune: <strong>{{ "%.2f €"|format(user.cassa) }}</strong></h2>
     {% if transazioni %}
     <div class="table-responsive">
       <table class="table table-striped">
@@ -156,9 +155,6 @@
           <td>
             <a href="{{ url_for('friend.profile', friend_id=friend.key.id()) }}">
               <span class="glyphicon glyphicon-user"></span>
-            </a>
-            <a href="{{ url_for('friend.edit', friend_id=friend.key.id()) }}">
-              <span class="glyphicon glyphicon-pencil"></span>
             </a>
           </td>
           <td>{{friend.nome}}</td>

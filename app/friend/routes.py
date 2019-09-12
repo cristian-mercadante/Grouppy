@@ -25,7 +25,7 @@ def add():
         message = new_friend.nome + " " + new_friend.cognome + " aggiunto con successo!"
         flash(message, 'success')
         return redirect(url_for('user.dashboard'))
-    return render_template('add_friend.html', form=form)
+    return render_template('friend_add.html', form=form)
 
 
 @friend.route('/profile/<friend_id>')

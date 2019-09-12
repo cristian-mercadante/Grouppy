@@ -23,7 +23,7 @@ def login():
     form = LoginForm()
     if form.log_in():
         return redirect(url_for('user.dashboard'))
-    return render_template('login.html', form=form)
+    return render_template('user_login.html', form=form)
 
 
 @user.route('/signup', methods=['GET', 'POST'])
@@ -38,7 +38,7 @@ def signup():
                         email=form.email.data, password=hashed_password)
         new_user.put()
         return redirect(url_for('user.login'))
-    return render_template('signup.html', form=form)
+    return render_template('user_signup.html', form=form)
 
 
 @user.route('/logout')

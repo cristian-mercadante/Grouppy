@@ -14,7 +14,7 @@
 <form class="myform" method="POST" action="{{url_for('user.settings')}}">
   {{ form.hidden_tag() }}
   {{ wtf.form_field(form.email) }}
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Aggiungi!</button>
+  {{ wtf.form_field(form.submit, class="btn btn-block btn-primary") }}
   <div class="container"></div>
 </form>
 

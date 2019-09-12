@@ -33,7 +33,7 @@
       {{ wtf.form_field(form.cognome) }}
       {{ wtf.form_field(form.email) }}
       {{ wtf.form_field(form.immagine) }}
-      <button class="btn btn-primary btn-block" type="submit">Modifica!</button>
+      {{ wtf.form_field(form.submit, class='btn btn-block btn-primary') }}
     </form>
   </div>
 
