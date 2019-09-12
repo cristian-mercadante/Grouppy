@@ -64,6 +64,22 @@ def dashboard():
                            transazioni=transazioni, uscite=uscite)
 
 
+@user.route('/dashboard/<username>')
+def dashboard_nologin(username):
+    user = User.get_by_id(username)
+    if not user:
+        return render_template('_404.html', message='Utente non esistente'), 404
+    friends = Friend.query(ancestor=user.key).order(-Friend.score).fetch()
+    best_friends = friends[0:2]
+    worst_friends = friends[-2:]
+    transazioni = Transazione.query(
+        ancestor=user.key).order(-Transazione.data).fetch(10)
+    uscite = Trip.query(ancestor=user.key).order(-Trip.data).fetch(10)
+    return render_template('dashboard.html', user=user, friends=friends,
+                           best_friends=best_friends, worst_friends=worst_friends,
+                           transazioni=transazioni, uscite=uscite)
+
+
 @user.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
