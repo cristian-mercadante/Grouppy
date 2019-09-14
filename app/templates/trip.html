@@ -37,11 +37,11 @@
 
 <form class="myform" method="POST" action="{{submit_to}}">
   {{ form.hidden_tag() }}
-  {{ wtf.form_field(form.titolo) }}
-  {{ wtf.form_field(form.data, placeholder='YYYY/MM/DD') }}
-  {{ wtf.form_field(form.partenza) }}
-  {{ wtf.form_field(form.destinazione) }}
-  {{ wtf.form_field(form.distanza) }}
+  {{ wtf.form_field(form.titolo, placeholder="Uscita") }}
+  {{ wtf.form_field(form.data, placeholder='AAAA/MM/GG') }}
+  {{ wtf.form_field(form.partenza, placeholder='Siamo partiti da...') }}
+  {{ wtf.form_field(form.destinazione, placeholder='...e siamo arrivati a...') }}
+  {{ wtf.form_field(form.distanza, placeholder='Abbiamo percorso...') }}
   {{ wtf.form_field(form.ritorno) }}
   {{ wtf.form_field(form.pagato) }}
   {{ wtf.form_field(form.speciale) }}

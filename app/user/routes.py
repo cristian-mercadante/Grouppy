@@ -93,6 +93,11 @@ def settings():
     return render_template('user_settings.html', form=form)
 
 
+@user.route('/about')
+def about():
+    return render_template('about.html')
+
+
 # GOOGLE MAPS API INTEGRATION
 '''
 @user.route('/map_test')

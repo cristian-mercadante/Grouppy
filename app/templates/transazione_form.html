@@ -38,10 +38,10 @@
 
 <form class="myform" method="POST" action="{{dest}}">
   {{ form.hidden_tag() }}
-  {{ wtf.form_field(form.titolo) }}
-  {{ wtf.form_field(form.data, placeholder='YYYY/MM/DD') }}
-  {{ wtf.form_field(form.costo) }}
-  {{ wtf.form_field(form.descrizione) }}
+  {{ wtf.form_field(form.titolo, placeholder='Spesa/Incasso') }}
+  {{ wtf.form_field(form.data, placeholder='AAAA/MM/GG') }}
+  {{ wtf.form_field(form.costo, placeholder='0.00') }}
+  {{ wtf.form_field(form.descrizione, placeholder='...') }}
   {{ wtf.form_field(form.submit, class='btn btn-block btn-primary') }}
   {% if transazione %}
   <!-- Button trigger modal -->

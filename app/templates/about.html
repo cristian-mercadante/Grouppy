@@ -1,0 +1,36 @@
+{% extends "_navbar.html" %}
+
+{% block title %}
+Grouppy
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='about.css')}}">
+{% endblock %}
+
+{% block _content %}
+<div class="container welcome">
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" style="text-align: center">
+    <img id="myPicture" class="img-responsive" height="300px" width="300px"
+      src="https://cristian-mercadante.github.io/img/profile.jpg">
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+    <h1>Ciao!</h1>
+    <p>Sono Cristian, uno sviluppatore di Fabbrico (RE). Al momento frequento il secondo anno di laurea magistrale in
+      ingegneria informatica a Modena. Durante il mio percorso di studi ho portato a termine piccoli progetti, ma
+      Grouppy è la prima vera applicazione che sviluppo. Come puoi vedere, non è il massimo, ma è nata come progetto
+      estivo e ne sono molto entusiasta.
+    </p>
+    <p>Se Grouppy ti è piaciuta, <a href="https://paypal.me/cristianmercadante?locale.x=it_IT" target="_blank">offrimi
+        un caffé!</a></p>
+    <p>Se hai consigli o segnalazioni da farmi, scrivimi a <a
+        href="mailto:crimerca96@gmail.com?subject=[Grouppy]">crimerca96@gmail.com</a></p>
+    <p>Se hai voglia, vista la mia pagina personale: <a href="https://cristian-mercadante.github.io"
+        target="_blank">cristian-mercadante.github.io</a></p>
+    <p>Repository del progetto: <a href="https://github.com/cristian-mercadante/grouppy"
+        target="_blank">github.com/cristian-mercadante/grouppy</a></p>
+  </div>
+</div>
+
+{% endblock %}

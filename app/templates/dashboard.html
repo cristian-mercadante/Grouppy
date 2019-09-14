@@ -54,120 +54,121 @@
     </div>
     {% endif %}
   </div>
-</div>
 
 
-<div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-    <h2 class="sub-header">Ultime uscite</h2>
-    {% if uscite %}
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+      <h2 class="sub-header">Ultime uscite</h2>
+      {% if uscite %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Titolo</th>
+              <th>Data</th>
+              <th>Partenza</th>
+              <th>Destinazione</th>
+              <th>KM</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in uscite %}
+            <tr>
+              <td>
+                <a href="{{ url_for('trip.info', trip_id=u.key.id()) }}">
+                  <span class="glyphicon glyphicon-info-sign"></span>
+                </a>
+              </td>
+              <td>{{u.titolo}}</td>
+              <td>{{u.data}}</td>
+              <td>{{u.partenza}}</td>
+              <td>{{u.destinazione}}</td>
+              <td>{{u.distanza}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <a href="{{url_for('trip.view')}}">Mostra tutte</a>
+      {% else %}
+      <div>
+        Non ci sono uscite.
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+      <h2 class="sub-header">Cassa comune: <strong>{{ "%.2f €"|format(user.cassa) }}</strong></h2>
+      {% if transazioni %}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Titolo</th>
+              <th>Data</th>
+              <th>€</th>
+              <th>Descrizione</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tr in transazioni %}
+            <tr>
+              <td>
+                <a href="{{ url_for('transazione.edit', transazione_id=tr.key.id()) }}">
+                  <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+              </td>
+              <td>{{tr.titolo}}</td>
+              <td>{{tr.data}}</td>
+              <td>{{"%.2f"|format(tr.costo)}}</td>
+              <td>{{tr.descrizione}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <a href="{{url_for('transazione.view')}}">Mostra tutte</a>
+      {% else %}
+      Non ci sono transazioni.
+      {% endif %}
+    </div>
+  </div>
+  <div>
+    <h2 class="sub-header">Amici</h2>
+    {% if friends %}
     <div class="table-responsive">
       <table class="table table-striped">
         <thead>
           <tr>
             <th></th>
-            <th>Titolo</th>
-            <th>Data</th>
-            <th>Partenza</th>
-            <th>Destinazione</th>
-            <th>KM</th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
-          {% for u in uscite %}
+          {% for friend in friends %}
           <tr>
             <td>
-              <a href="{{ url_for('trip.info', trip_id=u.key.id()) }}">
-                <span class="glyphicon glyphicon-info-sign"></span>
+              <a href="{{ url_for('friend.profile', friend_id=friend.key.id()) }}">
+                <span class="glyphicon glyphicon-user"></span>
               </a>
             </td>
-            <td>{{u.titolo}}</td>
-            <td>{{u.data}}</td>
-            <td>{{u.partenza}}</td>
-            <td>{{u.destinazione}}</td>
-            <td>{{u.distanza}}</td>
-          </tr>
-          {% endfor %}
+            <td>{{friend.nome}}</td>
+            <td>{{friend.cognome}}</td>
+            <td>{{friend.score | round(2, 'common')}}</td>
+          </tr> {% endfor %}
         </tbody>
       </table>
     </div>
-    <a href="{{url_for('trip.view')}}">Mostra tutte</a>
     {% else %}
     <div>
-      Non ci sono uscite.
+      Non hai aggiunto amici.
     </div>
     {% endif %}
   </div>
-
-  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-    <h2 class="sub-header">Cassa comune: <strong>{{ "%.2f €"|format(user.cassa) }}</strong></h2>
-    {% if transazioni %}
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Titolo</th>
-            <th>Data</th>
-            <th>€</th>
-            <th>Descrizione</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for tr in transazioni %}
-          <tr>
-            <td>
-              <a href="{{ url_for('transazione.edit', transazione_id=tr.key.id()) }}">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </a>
-            </td>
-            <td>{{tr.titolo}}</td>
-            <td>{{tr.data}}</td>
-            <td>{{"%.2f"|format(tr.costo)}}</td>
-            <td>{{tr.descrizione}}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <a href="{{url_for('transazione.view')}}">Mostra tutte</a>
-    {% else %}
-    Non ci sono transazioni.
-    {% endif %}
-  </div>
-</div>
-<div>
-  <h2 class="sub-header">Amici</h2>
-  {% if friends %}
-  <div class="table-responsive">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Nome</th>
-          <th>Cognome</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for friend in friends %}
-        <tr>
-          <td>
-            <a href="{{ url_for('friend.profile', friend_id=friend.key.id()) }}">
-              <span class="glyphicon glyphicon-user"></span>
-            </a>
-          </td>
-          <td>{{friend.nome}}</td>
-          <td>{{friend.cognome}}</td>
-          <td>{{friend.score | round(2, 'common')}}</td>
-        </tr> {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  {% else %}
-  <div>
-    Non hai aggiunto amici.
-  </div>
-  {% endif %}
 </div>
 {% endblock %}
