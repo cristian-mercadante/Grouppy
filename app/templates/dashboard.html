@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block page_content %}
-<h1 class="page-header">{{user.username}}</h1>
 
 <div class="container">
+  <h1 class="page-header">{{user.username}}</h1>
   <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
     <h2 class="sub-header" style="text-align: center">👍 Migliori amici</h2>
     {% if best_friends %}
@@ -54,8 +54,6 @@
     </div>
     {% endif %}
   </div>
-
-
 
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
