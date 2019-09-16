@@ -3,8 +3,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import InputRequired, Email, Length, ValidationError
 from werkzeug.security import check_password_hash
-from flask_login import login_user
+from flask_login import login_user, current_user
 from app.models import User
+from werkzeug.security import generate_password_hash
 
 
 class LoginForm(FlaskForm):
@@ -63,10 +64,10 @@ class RegisterForm(FlaskForm):
 
     def validate_password(self, password):
         if self.password.data != self.confirm_password.data:
-            raise ValidationError('La password sono diverse.')
+            raise ValidationError('Le password sono diverse.')
 
 
-class UserSettingsForm(FlaskForm):
+class ChangeEmailForm(FlaskForm):
     email = StringField('Email', validators=[
         InputRequired(), Email(message="Email non valida."), Length(max=50)])
     submit = SubmitField('Conferma')
@@ -75,3 +76,21 @@ class UserSettingsForm(FlaskForm):
         email = User.query(User.email == self.email.data).fetch(1)
         if email:
             raise ValidationError(u'Email già in uso.')
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Vecchia Password', validators=[
+        InputRequired(), Length(min=8, max=80)])
+    new_password = PasswordField('Nuova Password', validators=[
+        InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Conferma password', validators=[
+        InputRequired(), Length(min=8, max=80)])
+    submit = SubmitField('Cambia')
+
+    def validate_old_password(self, old_password):
+        if not check_password_hash(current_user.password, self.old_password.data):
+            raise ValidationError("La vecchia password non corrisponde.")
+
+    def validate_new_password(self, new_password):
+        if self.new_password.data != self.confirm_password.data:
+            raise ValidationError('Le password sono diverse.')

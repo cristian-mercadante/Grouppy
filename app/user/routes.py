@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
-from flask import render_template, url_for, redirect, request, Blueprint
-from forms import LoginForm, RegisterForm, UserSettingsForm
+from flask import render_template, url_for, redirect, request, Blueprint, flash
+from forms import LoginForm, RegisterForm, ChangeEmailForm, ChangePasswordForm
 from app.models import User, Friend, Trip, Transazione
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
@@ -83,14 +83,31 @@ def dashboard_nologin(username):
 @user.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    form = UserSettingsForm()
+    form = ChangeEmailForm()
     if form.validate_on_submit():
         current_user.email = form.email.data
         current_user.put()
+        message = 'Email cambiata con successo'
+        flash(message, 'success')
         return redirect(url_for('user.dashboard'))
     elif request.method == 'GET':
         form.email.data = current_user.email
     return render_template('user_settings.html', form=form)
+
+
+@user.route('/settings/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(
+            form.new_password.data, method='sha256')
+        current_user.password = hashed_password
+        current_user.put()
+        message = 'Password cambiata con successo'
+        flash(message, 'success')
+        return redirect(url_for('user.dashboard'))
+    return render_template('user_change_password.html', form=form)
 
 
 @user.route('/about')
