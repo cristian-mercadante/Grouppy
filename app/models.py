@@ -1,6 +1,8 @@
 # -*- coding: utf8 -*-
 from google.appengine.ext import ndb
 from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from grouppy import app
 
 
 class User(UserMixin, ndb.Model):
@@ -8,6 +10,19 @@ class User(UserMixin, ndb.Model):
     email = ndb.StringProperty(required=True)
     password = ndb.StringProperty(required=True)
     cassa = ndb.FloatProperty(default=0)
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.username}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.get_by_id(user_id)
 
     def get_id(self):
         return self.username

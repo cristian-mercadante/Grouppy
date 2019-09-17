@@ -1,9 +1,11 @@
 # -*- coding: utf8 -*-
 from flask import render_template, url_for, redirect, request, Blueprint, flash
-from forms import LoginForm, RegisterForm, ChangeEmailForm, ChangePasswordForm
+from forms import (LoginForm, RegisterForm, ChangeEmailForm,
+                   ChangePasswordForm, ResetPasswordForm, ResetPasswordRequestForm)
 from app.models import User, Friend, Trip, Transazione
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
+from google.appengine.api import mail
 
 
 user = Blueprint('user', __name__)
@@ -108,6 +110,61 @@ def change_password():
         flash(message, 'success')
         return redirect(url_for('user.dashboard'))
     return render_template('user_change_password.html', form=form)
+
+
+def send_reset_email(user):
+    email = user.email
+    token = user.get_reset_token()
+    sender = 'noreply@grouppy.appspotmail.com'
+    #to = "{} <{}>".format(user.username, user.email)
+    to = email
+    subject = "Grouppy Password Reset"
+    body = """
+Ciao {}
+Per resettare la password, clicca sul link:
+{}
+
+Se non hai richiesto il reset della password, ignora questa mail.
+
+Grouppy
+""".format(user.username, url_for('user.reset_token', token=token, _external=True))
+    mail.send_mail(sender=sender, to=to,
+                   subject=subject, body=body)
+
+
+@user.route('/reset_password', methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('user.dashboard'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.get_by_id(form.username.data)
+        send_reset_email(user)
+        message = u'È stata inviata una mail per il reset della password'
+        flash(message, 'success')
+        return redirect(url_for('user.login'))
+    return render_template('user_reset_request.html', form=form)
+
+
+@user.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('user.dashboard'))
+    user = User.verify_reset_token(token)
+    if not user:
+        message = 'Link non valido, tempo scaduto'
+        flash(message, 'warning')
+        return redirect(url_for('user.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(
+            form.password.data, method='sha256')
+        user.password = hashed_password
+        user.put()
+        message = 'Password cambiata con successo. Eseguire il login'
+        flash(message, 'success')
+        return redirect(url_for('user.login'))
+    return render_template('user_reset_token.html', form=form)
 
 
 @user.route('/about')

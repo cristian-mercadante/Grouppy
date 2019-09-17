@@ -72,11 +72,6 @@ class ChangeEmailForm(FlaskForm):
         InputRequired(), Email(message="Email non valida."), Length(max=50)])
     submit = SubmitField('Conferma')
 
-    def validate_email(self, email):
-        email = User.query(User.email == self.email.data).fetch(1)
-        if email:
-            raise ValidationError(u'Email già in uso.')
-
 
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Vecchia Password', validators=[
@@ -94,3 +89,26 @@ class ChangePasswordForm(FlaskForm):
     def validate_new_password(self, new_password):
         if self.new_password.data != self.confirm_password.data:
             raise ValidationError('Le password sono diverse.')
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    username = StringField('Username', validators=[
+        InputRequired(), Length(min=4, max=15)])
+    submit = SubmitField('Invia mail')
+
+    def validate_username(self, username):
+        user = User.get_by_id(self.username.data)
+        if not user:
+            raise ValidationError('Non esiste questo account')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[
+        InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Conferma password', validators=[
+        InputRequired(), Length(min=8, max=80)])
+    submit = SubmitField('Conferma')
+
+    def validate_password(self, password):
+        if self.password.data != self.confirm_password.data:
+            raise ValidationError('Le password sono diverse')
