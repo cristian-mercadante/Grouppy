@@ -6,6 +6,7 @@ from app.models import User, Friend, Trip, Transazione
 from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 from google.appengine.api import mail
+from google.appengine.runtime import apiproxy_errors
 
 
 user = Blueprint('user', __name__)
@@ -116,8 +117,7 @@ def send_reset_email(user):
     email = user.email
     token = user.get_reset_token()
     sender = 'noreply@grouppy.appspotmail.com'
-    #to = "{} <{}>".format(user.username, user.email)
-    to = email
+    to = "{} <{}>".format(user.username, user.email)
     subject = "Grouppy Password Reset"
     body = """
 Ciao {}
@@ -128,8 +128,14 @@ Se non hai richiesto il reset della password, ignora questa mail.
 
 Grouppy
 """.format(user.username, url_for('user.reset_token', token=token, _external=True))
-    mail.send_mail(sender=sender, to=to,
-                   subject=subject, body=body)
+
+    try:
+        mail.send_mail(sender=sender, to=to, subject=subject, body=body)
+    except apiproxy_errors.OverQuotaError, msg:
+        logging.error(msg)
+        message = u'Impossibile inviare mail. Riprova più tardi'
+        flash(message, 'danger')
+        return redirect(url_for('user.login'))
 
 
 @user.route('/reset_password', methods=['GET', 'POST'])
@@ -164,7 +170,7 @@ def reset_token(token):
         message = 'Password cambiata con successo. Eseguire il login'
         flash(message, 'success')
         return redirect(url_for('user.login'))
-    return render_template('user_reset_token.html', form=form)
+    return render_template('user_reset_token.html', form=form, token=token)
 
 
 @user.route('/about')
