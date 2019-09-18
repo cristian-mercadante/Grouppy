@@ -137,6 +137,8 @@ Grouppy
         message = u'Impossibile inviare mail. Riprova più tardi'
         flash(message, 'danger')
         return redirect(url_for('user.login'))
+    message = u'È stata inviata una mail per il reset della password'
+    flash(message, 'success')
 
 
 @user.route('/reset_password', methods=['GET', 'POST'])
@@ -147,8 +149,6 @@ def reset_request():
     if form.validate_on_submit():
         user = User.get_by_id(form.username.data)
         send_reset_email(user)
-        message = u'È stata inviata una mail per il reset della password'
-        flash(message, 'success')
         return redirect(url_for('user.login'))
     return render_template('user_reset_request.html', form=form)
 
