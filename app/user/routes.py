@@ -7,6 +7,7 @@ from flask_login import login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash
 from google.appengine.api import mail
 from google.appengine.runtime import apiproxy_errors
+import logging
 
 
 user = Blueprint('user', __name__)

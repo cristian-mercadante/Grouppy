@@ -78,7 +78,7 @@ class ChangePasswordForm(FlaskForm):
         InputRequired(), Length(min=8, max=80)])
     new_password = PasswordField('Nuova Password', validators=[
         InputRequired(), Length(min=8, max=80)])
-    confirm_password = PasswordField('Conferma password', validators=[
+    confirm_password = PasswordField('Conferma Password', validators=[
         InputRequired(), Length(min=8, max=80)])
     submit = SubmitField('Cambia')
 
@@ -105,7 +105,7 @@ class ResetPasswordRequestForm(FlaskForm):
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[
         InputRequired(), Length(min=8, max=80)])
-    confirm_password = PasswordField('Conferma password', validators=[
+    confirm_password = PasswordField('Conferma Password', validators=[
         InputRequired(), Length(min=8, max=80)])
     submit = SubmitField('Conferma')
 
