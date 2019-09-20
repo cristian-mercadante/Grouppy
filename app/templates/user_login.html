@@ -9,7 +9,8 @@
   {{ wtf.form_field(form.remember) }}
   {{ wtf.form_field(form.submit, class="btn btn-block btn-primary") }}
   <div class="container" style="padding-top: 10pt">
-    Non hai ancora un account? <a href="{{url_for('user.signup')}}">Iscriviti ora!</a>
+    Non hai ancora un account?<br>
+    <a href="{{url_for('user.signup')}}">Iscriviti ora!</a>
   </div>
   <div class="container" style="padding-top: 7pt">
     <a href="{{url_for('user.reset_request')}}">Password dimenticata?</a>
