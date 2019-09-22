@@ -45,6 +45,8 @@ def edit(friend_id):
     if not friend:
         return render_template('_404.html', message='Amico non esistente'), 404
     form = EditFriendForm()
+    upload_url = blobstore.create_upload_url(
+        url_for('friend.edit', friend_id=friend_id))
     if request.method == 'POST' and form.validate_on_submit():
         friend.email = form.email.data
         friend.nome = form.nome.data
@@ -71,8 +73,6 @@ def edit(friend_id):
         form.email.data = friend.email
         form.nome.data = friend.nome
         form.cognome.data = friend.cognome
-        upload_url = blobstore.create_upload_url(
-            url_for('friend.edit', friend_id=friend_id))
     return render_template('friend_edit.html', friend=friend, form=form, upload_url=upload_url)
 
 
