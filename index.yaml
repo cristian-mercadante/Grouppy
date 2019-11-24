@@ -21,3 +21,9 @@ indexes:
   properties:
   - name: "data"
     direction: desc
+- kind: "Friend"
+  ancestor: yes
+  properties:
+  - name: "escludi"
+  - name: "score"
+    direction: desc

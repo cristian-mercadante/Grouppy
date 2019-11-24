@@ -142,6 +142,7 @@
         <thead>
           <tr>
             <th></th>
+            <th>Pos</th>
             <th>Nome</th>
             <th>Cognome</th>
             <th>Score</th>
@@ -149,6 +150,42 @@
         </thead>
         <tbody>
           {% for friend in friends %}
+          <tr>
+            <td>
+              <a href="{{ url_for('friend.profile', friend_id=friend.key.id()) }}">
+                <span class="glyphicon glyphicon-user"></span>
+              </a>
+            </td>
+            <td>{{loop.index}}°</td>
+            <td>{{friend.nome}}</td>
+            <td>{{friend.cognome}}</td>
+            <td>{{friend.score | round(2, 'common')}}</td>
+          </tr> {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div>
+      Non hai aggiunto amici.
+    </div>
+    {% endif %}
+  </div>
+
+  <div>
+    <h2 class="sub-header">Altri amici</h2>
+    {% if esclusi %}
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for friend in esclusi %}
           <tr>
             <td>
               <a href="{{ url_for('friend.profile', friend_id=friend.key.id()) }}">

@@ -36,8 +36,7 @@ def signup():
         return redirect(url_for('user.dashboard'))
     form = RegisterForm()
     if form.validate_on_submit():
-        hashed_password = generate_password_hash(
-            form.password.data, method='sha256')
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
         new_user = User(id=form.username.data, username=form.username.data,
                         email=form.email.data, password=hashed_password)
         new_user.put()
@@ -57,6 +56,8 @@ def logout():
 def dashboard():
     friends = Friend.query(
         ancestor=current_user.key).order(-Friend.score).fetch()
+    esclusi = [f for f in friends if f.escludi == True]
+    friends = [f for f in friends if f not in esclusi]
     best_friends = friends[0:2]
     worst_friends = friends[-2:]
     transazioni = Transazione.query(
@@ -64,6 +65,7 @@ def dashboard():
     uscite = Trip.query(
         ancestor=current_user.key).order(-Trip.data).fetch(10)
     return render_template('dashboard.html', user=current_user, friends=friends,
+                           esclusi=esclusi,
                            best_friends=best_friends, worst_friends=worst_friends,
                            transazioni=transazioni, uscite=uscite)
 
@@ -74,12 +76,15 @@ def dashboard_nologin(username):
     if not user:
         return render_template('_404.html', message='Utente non esistente'), 404
     friends = Friend.query(ancestor=user.key).order(-Friend.score).fetch()
+    esclusi = [f for f in friends if f.escludi == True]
+    friends = [f for f in friends if f not in esclusi]
     best_friends = friends[0:2]
     worst_friends = friends[-2:]
     transazioni = Transazione.query(
         ancestor=user.key).order(-Transazione.data).fetch(10)
     uscite = Trip.query(ancestor=user.key).order(-Trip.data).fetch(10)
     return render_template('dashboard.html', user=user, friends=friends,
+                           esclusi=esclusi,
                            best_friends=best_friends, worst_friends=worst_friends,
                            transazioni=transazioni, uscite=uscite)
 
@@ -184,4 +189,13 @@ def about():
 @user.route('/map_test')
 def map_test():
     return render_template('map_test.html')
+'''
+
+# MIGRATIONS
+'''
+@user.route('/dev/migrate')
+def migrate():
+    from update_schema import add_escludi_to_friend
+    add_escludi_to_friend(value=False)
+    return "Success!"
 '''

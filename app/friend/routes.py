@@ -20,7 +20,8 @@ def add():
     form = AddFriendForm()
     if form.validate_on_submit():
         new_friend = Friend(email=form.email.data, nome=form.nome.data,
-                            cognome=form.cognome.data, parent=current_user.key)
+                            cognome=form.cognome.data, escludi=form.escludi.data,
+                            parent=current_user.key)
         new_friend.put()
         message = new_friend.nome + " " + new_friend.cognome + " aggiunto con successo!"
         flash(message, 'success')
@@ -51,6 +52,7 @@ def edit(friend_id):
         friend.email = form.email.data
         friend.nome = form.nome.data
         friend.cognome = form.cognome.data
+        friend.escludi = form.escludi.data
 
         if form.immagine.data:
             uploaded_file = request.files.get('immagine')
@@ -73,6 +75,7 @@ def edit(friend_id):
         form.email.data = friend.email
         form.nome.data = friend.nome
         form.cognome.data = friend.cognome
+        form.escludi.data = friend.escludi
     return render_template('friend_edit.html', friend=friend, form=form, upload_url=upload_url)
 
 

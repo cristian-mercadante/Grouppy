@@ -35,6 +35,7 @@ class Friend(ndb.Model):
     score = ndb.FloatProperty(required=True, default=0)
     immagine_url = ndb.StringProperty()
     immagine_blob_key = ndb.BlobKeyProperty()
+    escludi = ndb.BooleanProperty(default=False)
 
 
 class Trip(ndb.Model):
