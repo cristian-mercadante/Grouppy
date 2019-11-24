@@ -11,7 +11,7 @@ trip = Blueprint('trip', __name__)
 
 
 def get_trips(friend_id):
-    trips = Trip.query(ancestor=current_user.key).fetch()
+    trips = Trip.query(ancestor=current_user.key).order(-Trip.data).fetch()
     trip_auto = []
     trip_pass = []
     for t in trips:
