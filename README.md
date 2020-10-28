@@ -22,9 +22,9 @@ L'utente può aggiungere le uscite, indicando la distanza in KM, chi ha guidato 
 ### Cassa Comune
 L'utente può annotare spese e incassi della compagnia.
 
-## Istruzioni per il testing e il deploy
+## Istruzioni lo sviluppo ed il deploy
 Il file 'app.yaml' stabilisce le specifiche per il deploy su Google App Engine.
-Per il testing si utilizzi il comando:
+Per lo sviluppo si utilizzi il comando:
 ```bash
 dev_appserver.py app.yaml
 ```

@@ -75,13 +75,13 @@ Grouppy
       </div>
       <div class="modal-body">
         <input id="share_link" type="text" class="form-control" readonly="readonly"
-          value="http://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
+          value="https://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
         <hr>
         <button class="btn btn-info" type="button" onclick="copyToClipboard()">
           <span class="glyphicon glyphicon-copy"></span> Copia
         </button>
         <a class="btn btn-success"
-          href="https://api.whatsapp.com/send?text=http://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
+          href="https://api.whatsapp.com/send?text=https://grouppy.appspot.com/dashboard/{{current_user.username | e}}">
           Condividi Link su WhatsApp
         </a>
       </div>
